@@ -22,50 +22,66 @@ Debido al precio o a la tardanza del envio, apenas se muestran modulos compatibl
 
 La ventaja de los modulos con linea unica es que pueden montarse en vertical sin nigun problema, por lo que se pueden condensar varias placas en la vertical de la placa base.
 
+Las medidas se dan pensando en que la placa base estara puesta de forma horizontal y el resto de placas esclavo en vertical. Por esto ultimo, el ancho de la placa se basara en el lado en el que se apoya (el lado donde existan pines) y el alto se medira sobre uno de los lados contiguos al ancho.
+
 ### Placa base: D1 Mini
 
-| Vendedor   | Item    | Cantidad | Precio  | Precio Ud. | Link Amazon                                                                     |
-| :-----:    | :-----: | :-----:  | :-----: | :-----:    | :-----:                                                                         |
-| IZOKEE     | D1 Mini | 5        | 22.99   | 4.6        | [Link](https://www.amazon.es/dp/B076F81VZT/ref=cm_sw_r_tw_dp_U_x_FnhwCbJXNS727) |
-| IZOKEE     | D1 Mini | 3        | 14.99   | 5          | [Link](https://www.amazon.es/dp/B076F53B6S/ref=cm_sw_r_tw_dp_U_x_Y5hwCbAY80Q19) |
-| AZDelivery | D1 Mini | 5        | 24.99   | 5          | [Link](https://www.amazon.es/dp/B0754W6Z2F/ref=cm_sw_r_tw_dp_U_x_v5hwCbSC78N0C) |
-| AZDelivery | D1 Mini | 3        | 17.99   | 6          | [Link](https://www.amazon.es/dp/B0754N794H/ref=cm_sw_r_tw_dp_U_x_17hwCbJE01X3R) |
+![Render de placa base: D1 Mini](media/3D/ESP8266_D1-Mini.stl)
+
+| Vendedor   | Item    | Cantidad | Precio  | Precio Ud. | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
+| :-----:    | :-----: | :-----:  | :-----: | :-----:    | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
+| IZOKEE     | D1 Mini | 5        | 22.99   | 4.6        | 25.6       | 34.2      | 10          | 3        | [Link](https://www.amazon.es/dp/B076F81VZT/ref=cm_sw_r_tw_dp_U_x_FnhwCbJXNS727) |
+| IZOKEE     | D1 Mini | 3        | 14.99   | 5          | 25.6       | 34.2      | 10          | 3        | [Link](https://www.amazon.es/dp/B076F53B6S/ref=cm_sw_r_tw_dp_U_x_Y5hwCbAY80Q19) |
+| AZDelivery | D1 Mini | 5        | 24.99   | 5          | 25.6       | 34.2      | 10          | 3        | [Link](https://www.amazon.es/dp/B0754W6Z2F/ref=cm_sw_r_tw_dp_U_x_v5hwCbSC78N0C) |
+| AZDelivery | D1 Mini | 3        | 17.99   | 6          | 25.6       | 34.2      | 10          | 3        | [Link](https://www.amazon.es/dp/B0754N794H/ref=cm_sw_r_tw_dp_U_x_17hwCbJE01X3R) |
 
 ### Placa esclavo 1: Micro-SD para data-logger
 
-| Vendedor  | Item                      | Cantidad | Precio  | Precio Ud. | Link Amazon                                                                     | Pinout compatible D1 Mini |
-| :-----:   | :-----:                   | :-----:  | :-----: | :-----:    | :-----:                                                                         | :-----:                   |
-| ILS       | Modulo uSD con 1xLDO      | 10       | 12.69   | 1.27       | [Link](https://www.amazon.es/dp/B079124Z4G/ref=cm_sw_r_tw_dp_U_x_9kgwCbS7D4XS3) | No, linea doble           |
-| Electrely | Modulo uSD con 2xLDO      | 5        | 8.99    | 1.80       | [Link](https://www.amazon.es/dp/B07G296J2M/ref=cm_sw_r_tw_dp_U_x_RjgwCbAC8SWAE) | No, linea unica           |
-| TECNOIOT  | Modulo uSD con 2xLDO      | 5        | 9.48    | 1.90       | [Link](https://www.amazon.es/dp/B07LH6DH9D/ref=cm_sw_r_tw_dp_U_x_plgwCb481VT7A) | No, linea unica           |
-| ILS       | Modulo Wemos uSD (no LDO) | 5        | 13.29   | 2.66       | [Link](https://www.amazon.es/dp/B07F6CF6YD/ref=cm_sw_r_tw_dp_U_x_FZfwCbXXAGKNK) | Si                        |
+![Render de placa esclavo 1: uSD Data Logger](media/3D/breakout_uSD.step)
+
+| Vendedor  | Item                      | Cantidad | Precio  | Precio Ud. | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
+| :-----:   | :-----:                   | :-----:  | :-----: | :-----:    | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
+| ILS       | Modulo uSD con 1xLDO      | 10       | 12.69   | 1.27       | No, linea doble           | 30         | 51        | 10          | 8        | [Link](https://www.amazon.es/dp/B079124Z4G/ref=cm_sw_r_tw_dp_U_x_9kgwCbS7D4XS3) |
+| Electrely | Modulo uSD con 2xLDO      | 5        | 8.99    | 1.80       | No, linea unica           | 24         | 42        | 12          | 5        | [Link](https://www.amazon.es/dp/B07G296J2M/ref=cm_sw_r_tw_dp_U_x_RjgwCbAC8SWAE) |
+| TECNOIOT  | Modulo uSD con 2xLDO      | 5        | 9.48    | 1.90       | No, linea unica           | 24         | 42        | 12          | 5        | [Link](https://www.amazon.es/dp/B07LH6DH9D/ref=cm_sw_r_tw_dp_U_x_plgwCb481VT7A) |
+| ILS       | Modulo Wemos uSD (no LDO) | 5        | 13.29   | 2.66       | Si                        | 25.6       | 34.2      | 10          | 10       | [Link](https://www.amazon.es/dp/B07F6CF6YD/ref=cm_sw_r_tw_dp_U_x_FZfwCbXXAGKNK) |
 
 ### Placa esclavo 2: Sensor de temperatura y humedad
 
-| Vendedor | Item               | Cantidad | Precio  | Precio Ud. | Link Amazon                                                                     | Pinout compatible D1 Mini |
-| :-----:  | :-----:            | :-----:  | :-----: | :-----:    | :-----:                                                                         | :-----:                   |
-| DollaTek | Modulo DHT11       | 5        | 8.99    | 1.8        | [Link](https://www.amazon.es/dp/B07DK8MVNX/ref=cm_sw_r_tw_dp_U_x_FagwCbN7YP2E2) | No, linea unica           |
-| ILS      | Modulo Wemos DHT12 | 10       | 26.99   | 2.7        | [Link](https://www.amazon.es/dp/B07FCJY5FZ/ref=cm_sw_r_tw_dp_U_x_hYfwCbA1C7WDR) | Si                        |
+![Render de placa esclavo 1: DHT11](media/3D/breakout_DHT11.step)
+
+| Vendedor | Item               | Cantidad | Precio  | Precio Ud. | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
+| :-----:  | :-----:            | :-----:  | :-----: | :-----:    | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
+| DollaTek | Modulo DHT11       | 5        | 8.99    | 1.8        | No, linea unica           | 12         | 28        | 10          | 5        | [Link](https://www.amazon.es/dp/B07DK8MVNX/ref=cm_sw_r_tw_dp_U_x_FagwCbN7YP2E2) |
+| ILS      | Modulo Wemos DHT12 | 10       | 26.99   | 2.7        | Si                        | 25.6       | 34.2      | 10          | 10       | [Link](https://www.amazon.es/dp/B07FCJY5FZ/ref=cm_sw_r_tw_dp_U_x_hYfwCbA1C7WDR) |
 
 ### Placa esclavo 3: Sensor barometrico
 
-| Vendedor    | Item          | Cantidad | Precio  | Precio Ud. | Link Amazon                                                                     | Pinout compatible D1 Mini |
-| :-----:     | :-----:       | :-----:  | :-----: | :-----:    | :-----:                                                                         | :-----:                   |
-| MissBirdler | Modulo BMP180 | 5        | 14.49   | 2.9        | [Link](https://www.amazon.es/dp/B07GNKWWWF/ref=cm_sw_r_tw_dp_U_x_BggwCbCETKDP7) | No, linea unica           |
-| AZDelivery  | Modulo BMP280 | 5        | 15.96   | 3.2        | [Link](https://www.amazon.es/dp/B07HMWB4PD/ref=cm_sw_r_tw_dp_U_x_gfgwCbZTN68BG) | No, linea unica           |
+![Render de placa esclavo 1: BMP180](media/3D/breakout_BMP180.step)
+
+| Vendedor    | Item          | Cantidad | Precio  | Precio Ud. | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
+| :-----:     | :-----:       | :-----:  | :-----: | :-----:    | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
+| MissBirdler | Modulo BMP180 | 5        | 14.49   | 2.9        | No, linea unica           | 10         | 12        | 5           | 1        | [Link](https://www.amazon.es/dp/B07GNKWWWF/ref=cm_sw_r_tw_dp_U_x_BggwCbCETKDP7) |
+| AZDelivery  | Modulo BMP280 | 5        | 15.96   | 3.2        | No, linea unica           | 15.5       | 12.2      | 5           | 1        | [Link](https://www.amazon.es/dp/B07HMWB4PD/ref=cm_sw_r_tw_dp_U_x_gfgwCbZTN68BG) |
 
 ### Placa esclavo 2 + 3: Sensor de temperatura, humedad y presion
 
-| Vendedor   | Item          | Cantidad | Precio  | Precio Ud.         | Link Amazon                                                                     | Pinout compatible D1 Mini |
-| :-----:    | :-----:       | :-----:  | :-----: | :-----:            | :-----:                                                                         | :-----:                   |
-| AZDelivery | Modulo BME280 | 5        | 26.12   | 5.23 (+0.53/-0.67) | [Link](https://www.amazon.es/dp/B07HMQMW6M/ref=cm_sw_r_tw_dp_U_x_BDhwCbJR0T7HB) | No, linea unica           |
-| diymore    | Modulo BME280 | 5        | 26.99   | 5.4 (+0.7/-0.5)    | [Link](https://www.amazon.es/dp/B0799FH5PG/ref=cm_sw_r_tw_dp_U_x_0DhwCbT54YETR) | No, linea unica           |
+![Render de placa esclavo 1: BME280](media/3D/breakout_BME280.step)
+
+| Vendedor   | Item          | Cantidad | Precio  | Precio Ud.         | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
+| :-----:    | :-----:       | :-----:  | :-----: | :-----:            | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
+| AZDelivery | Modulo BME280 | 5        | 26.12   | 5.23 (+0.53/-0.67) | No, linea unica           | 10         | 12        | 5           | 1        | [Link](https://www.amazon.es/dp/B07HMQMW6M/ref=cm_sw_r_tw_dp_U_x_BDhwCbJR0T7HB) |
+| diymore    | Modulo BME280 | 5        | 26.99   | 5.4 (+0.7/-0.5)    | No, linea unica           | 10         | 12        | 5           | 1        | [Link](https://www.amazon.es/dp/B0799FH5PG/ref=cm_sw_r_tw_dp_U_x_0DhwCbT54YETR) |
 
 ### Placa esclavo 4: Giroscopo de 3 ejes y acelerometro de 3 ejes
 
-| Vendedor    | Item            | Cantidad | Precio  | Precio Ud. | Link Amazon                                                                     | Pinout compatible D1 Mini |
-| :-----:     | :-----:         | :-----:  | :-----: | :-----:    | :-----:                                                                         | :-----:                   |
-| MUZOCT      | Modulo MPU-6050 | 6        | 14.29   | 2.4        | [Link](https://www.amazon.es/dp/B07D7SSTFW/ref=cm_sw_r_tw_dp_U_x_iWhwCbYCAJV6C) | No, linea unica           |
-| Kuman       | Modulo MPU-6050 | 10       | 31.99   | 3.2        | [Link](https://www.amazon.es/dp/B01N96D51D/ref=cm_sw_r_tw_dp_U_x_WOhwCbS8G4XTD) | No, linea unica           |
-| Gikfun      | Modulo MPU-6050 | 3        | 13.31   | 4.43       | [Link](https://www.amazon.es/dp/B07FVKWJF6/ref=cm_sw_r_tw_dp_U_x_SUhwCbPK351RC) | No, linea unica           |
-| MissBirdler | Modulo MPU-6050 | 3        | 13.37   | 4.46       | [Link](https://www.amazon.es/dp/B07GNJLN46/ref=cm_sw_r_tw_dp_U_x_VRhwCbA2Q11TK) | No, linea unica           |
+![Render de placa esclavo 1: MPU-6050](media/3D/breakout_MPU6050a.step)
+
+![Render de placa esclavo 1: MPU-6050](media/3D/breakout_MPU6050b.step)
+
+| Vendedor    | Item            | Cantidad | Precio  | Precio Ud. | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
+| :-----:     | :-----:         | :-----:  | :-----: | :-----:    | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
+| MUZOCT      | Modulo MPU-6050 | 6        | 14.29   | 2.4        | No, linea unica           | 20         | 16        | 5           | 1        | [Link](https://www.amazon.es/dp/B07D7SSTFW/ref=cm_sw_r_tw_dp_U_x_iWhwCbYCAJV6C) |
+| Kuman       | Modulo MPU-6050 | 10       | 31.99   | 3.2        | No, linea unica           | 20         | 16        | 5           | 1        | [Link](https://www.amazon.es/dp/B01N96D51D/ref=cm_sw_r_tw_dp_U_x_WOhwCbS8G4XTD) |
+| Gikfun      | Modulo MPU-6050 | 3        | 13.31   | 4.43       | No, linea unica           | 20         | 16        | 5           | 1        | [Link](https://www.amazon.es/dp/B07FVKWJF6/ref=cm_sw_r_tw_dp_U_x_SUhwCbPK351RC) |
+| MissBirdler | Modulo MPU-6050 | 3        | 13.37   | 4.46       | No, linea unica           | 20         | 16        | 5           | 1        | [Link](https://www.amazon.es/dp/B07GNJLN46/ref=cm_sw_r_tw_dp_U_x_VRhwCbA2Q11TK) |
