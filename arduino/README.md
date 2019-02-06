@@ -10,7 +10,7 @@ Basada en el chip [ESP8266EX](media/ESP8266EX_datasheet_en.pdf)
 
 Caracteristicas:
 
-![Resumen de caracteristicas del chip ESP8266ES](media/ESP8266EX_specs-table.png)
+![Resumen de caracteristicas del chip ESP8266EX](media/ESP8266EX_specs-table.png)
 
 ## Tablas comparativas de precios por tipo de modulo
 
@@ -26,18 +26,24 @@ Las medidas se dan pensando en que la placa base estara puesta de forma horizont
 
 ### Placa base: D1 Mini
 
-![Render de placa base: D1 Mini](media/3D/ESP8266_D1-Mini.stl)
+|                                                                       |                                                                        |
+| :-----:                                                               | :-----:                                                                |
+| ![Render de placa base: D1 Mini](media/3D/ESP8266_D1-Mini.stl_30.png) | ![Render de placa base: D1 Mini](media/3D/ESP8266_D1-Mini.stl_315.png) |
+
+[Ver render online de placa base: D1 Mini](media/3D/ESP8266_D1-Mini.stl)
 
 | Vendedor   | Item    | Cantidad | Precio  | Precio Ud. | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
 | :-----:    | :-----: | :-----:  | :-----: | :-----:    | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
 | IZOKEE     | D1 Mini | 5        | 22.99   | 4.6        | 25.6       | 34.2      | 10          | 3        | [Link](https://www.amazon.es/dp/B076F81VZT/ref=cm_sw_r_tw_dp_U_x_FnhwCbJXNS727) |
 | IZOKEE     | D1 Mini | 3        | 14.99   | 5          | 25.6       | 34.2      | 10          | 3        | [Link](https://www.amazon.es/dp/B076F53B6S/ref=cm_sw_r_tw_dp_U_x_Y5hwCbAY80Q19) |
-| AZDelivery | D1 Mini | 5        | 24.99   | 5          | 25.6       | 34.2      | 10          | 3        | [Link](https://www.amazon.es/dp/B0754W6Z2F/ref=cm_sw_r_tw_dp_U_x_v5hwCbSC78N0C) |
-| AZDelivery | D1 Mini | 3        | 17.99   | 6          | 25.6       | 34.2      | 10          | 3        | [Link](https://www.amazon.es/dp/B0754N794H/ref=cm_sw_r_tw_dp_U_x_17hwCbJE01X3R) |
 
 ### Placa esclavo 1: Micro-SD para data-logger
 
-![Render de placa esclavo 1: uSD Data Logger](media/3D/breakout_uSD.step)
+|                                                                                 |                                                                                  |
+| :-----:                                                                         | :-----:                                                                          |
+| ![Render de placa esclavo 1: uSD Data Logger](media/3D/breakout_uSD.stl_30.png) | ![Render de placa esclavo 1: uSD Data Logger](media/3D/breakout_uSD.stl_315.png) |
+
+[Ver render online de placa esclavo 1: uSD Data Logger](media/3D/breakout_uSD.stl)
 
 | Vendedor  | Item                      | Cantidad | Precio  | Precio Ud. | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
 | :-----:   | :-----:                   | :-----:  | :-----: | :-----:    | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
@@ -48,7 +54,11 @@ Las medidas se dan pensando en que la placa base estara puesta de forma horizont
 
 ### Placa esclavo 2: Sensor de temperatura y humedad
 
-![Render de placa esclavo 1: DHT11](media/3D/breakout_DHT11.step)
+|                                                                         |                                                                          |
+| :-----:                                                                 | :-----:                                                                  |
+| ![Render de placa esclavo 2: DHT11](media/3D/breakout_DHT11.stl_30.png) | ![Render de placa esclavo 2: DHT11](media/3D/breakout_DHT11.stl_315.png) |
+
+[Ver render online de placa esclavo 2: DHT11](media/3D/breakout_DHT11.stl)
 
 | Vendedor | Item               | Cantidad | Precio  | Precio Ud. | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
 | :-----:  | :-----:            | :-----:  | :-----: | :-----:    | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
@@ -57,7 +67,11 @@ Las medidas se dan pensando en que la placa base estara puesta de forma horizont
 
 ### Placa esclavo 3: Sensor barometrico
 
-![Render de placa esclavo 1: BMP180](media/3D/breakout_BMP180.step)
+|                                                                           |                                                                            |
+| :-----:                                                                   | :-----:                                                                    |
+| ![Render de placa esclavo 3: BMP180](media/3D/breakout_BMP180.stl_30.png) | ![Render de placa esclavo 3: BMP180](media/3D/breakout_BMP180.stl_315.png) |
+
+[Ver render online de placa esclavo 3: BMP180](media/3D/breakout_BMP180.stl)
 
 | Vendedor    | Item          | Cantidad | Precio  | Precio Ud. | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
 | :-----:     | :-----:       | :-----:  | :-----: | :-----:    | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
@@ -66,7 +80,11 @@ Las medidas se dan pensando en que la placa base estara puesta de forma horizont
 
 ### Placa esclavo 2 + 3: Sensor de temperatura, humedad y presion
 
-![Render de placa esclavo 1: BME280](media/3D/breakout_BME280.step)
+|                                                                               |                                                                                |
+| :-----:                                                                       | :-----:                                                                        |
+| ![Render de placa esclavo 2 + 3: BME280](media/3D/breakout_BME280.stl_30.png) | ![Render de placa esclavo 2 + 3: BME280](media/3D/breakout_BME280.stl_315.png) |
+
+[Ver render online de placa esclavo 2 + 3: BME280](media/3D/breakout_BME280.stl)
 
 | Vendedor   | Item          | Cantidad | Precio  | Precio Ud.         | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
 | :-----:    | :-----:       | :-----:  | :-----: | :-----:            | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
@@ -75,9 +93,11 @@ Las medidas se dan pensando en que la placa base estara puesta de forma horizont
 
 ### Placa esclavo 4: Giroscopo de 3 ejes y acelerometro de 3 ejes
 
-![Render de placa esclavo 1: MPU-6050](media/3D/breakout_MPU6050a.step)
+|                                                                              |                                                                               |
+| :-----:                                                                      | :-----:                                                                       |
+| ![Render de placa esclavo 4: MPU-6050](media/3D/breakout_MPU6050.stl_30.png) | ![Render de placa esclavo 4: MPU-6050](media/3D/breakout_MPU6050.stl_315.png) |
 
-![Render de placa esclavo 1: MPU-6050](media/3D/breakout_MPU6050b.step)
+[Ver render online de placa esclavo 4: MPU-6050](media/3D/breakout_MPU6050.stl)
 
 | Vendedor    | Item            | Cantidad | Precio  | Precio Ud. | Pinout compatible D1 Mini | Ancho (mm) | Alto (mm) | Grosor (mm) | Peso (g) | Link Amazon                                                                     |
 | :-----:     | :-----:         | :-----:  | :-----: | :-----:    | :-----:                   | :-----:    | :-----:   | :-----:     | :-----:  | :-----:                                                                         |
@@ -85,3 +105,21 @@ Las medidas se dan pensando en que la placa base estara puesta de forma horizont
 | Kuman       | Modulo MPU-6050 | 10       | 31.99   | 3.2        | No, linea unica           | 20         | 16        | 5           | 1        | [Link](https://www.amazon.es/dp/B01N96D51D/ref=cm_sw_r_tw_dp_U_x_WOhwCbS8G4XTD) |
 | Gikfun      | Modulo MPU-6050 | 3        | 13.31   | 4.43       | No, linea unica           | 20         | 16        | 5           | 1        | [Link](https://www.amazon.es/dp/B07FVKWJF6/ref=cm_sw_r_tw_dp_U_x_SUhwCbPK351RC) |
 | MissBirdler | Modulo MPU-6050 | 3        | 13.37   | 4.46       | No, linea unica           | 20         | 16        | 5           | 1        | [Link](https://www.amazon.es/dp/B07GNJLN46/ref=cm_sw_r_tw_dp_U_x_VRhwCbA2Q11TK) |
+
+## Ideas / Propuestas
+
+### Montaje 1
+
+|                                                                       |                                                                        |
+| :-----:                                                               | :-----:                                                                |
+| ![Render del Montaje 1](media/3D/fixture_1.stl_30.png) | ![Render del Montaje 1](media/3D/fixture_1.stl_315.png) |
+
+[Ver render online del Montaje 1](media/3D/fixture_1.stl)
+
+### Montaje 2
+
+|                                                                       |                                                                        |
+| :-----:                                                               | :-----:                                                                |
+| ![Render del Montaje 2](media/3D/fixture_2.stl_30.png) | ![Render del Montaje 2](media/3D/fixture_2.stl_315.png) |
+
+[Ver render online del Montaje 2](media/3D/fixture_2.stl)
