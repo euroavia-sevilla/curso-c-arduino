@@ -3,6 +3,12 @@
 # HTML .: Work as-is
 # PDF ..: Needed "ebook-convert" -> "apt-get install calibre calibre-bin"
 
+APP_PATH="$(dirname "$(readlink -f "$0")")"
+APP_SCRIPT_NAME="$(basename "$(readlink -f "$0")")"
+
+echo "APP_PATH .........: ${APP_PATH}"
+echo "APP_SCRIPT_NAME ..: ${APP_SCRIPT_NAME}"
+
 # Enter the book folder
 cd contenido
 rm -rf _book
@@ -22,9 +28,24 @@ git checkout gh-pages
 git pull origin gh-pages --rebase
 
 # Clean
-rm -rfv !("."|".."|".git"|"contenido")
+for file in ./*; do
+  filename="$(basename "$(readlink -f "$file")")"
+  case $filename in
+    "compile-book.sh"|\
+    "contenido"|\
+    ".git"|\
+    "."|\
+    "..")
+      echo "Skipping '${file}' deletion"
+      ;;
+    *)
+      echo "Deleting '${file}'"
+      rm -rf "${file}"
+      ;;
+  esac
+done
 
-# Copy the static site files into the current directory.
+# Copy the static site files into the current directory
 cp -R contenido/_book/* .
 rm -rf contenido
 
