@@ -1,0 +1,23 @@
+{
+  "folders":
+  [
+    {
+      "path": "."
+    }
+  ],
+  "build_systems":
+  [
+    {
+      "name": "Compile and execute current C program",
+      "shell_cmd": "cd $file_path && gcc -o $file_base_name ./$file_name && ./$file_base_name"
+    },
+    {
+      "name": "Compile and execute current C program (Verbose)",
+      "shell_cmd": "cd $file_path && gcc -v -o $file_base_name ./$file_name && ./$file_base_name"
+    },
+    {
+      "name": "Test sublime build system vars",
+      "shell_cmd": "echo project ............: $project && echo project_path .......: $project_path && echo project_name .......: $project_name && echo project_extension ..: $project_extension && echo project_base_name ..: $project_base_name && echo packages ...........: $packages && echo project_path regex .: ${project_path/^.*[\\/|\\\\]//}"
+    }
+  ]
+}
