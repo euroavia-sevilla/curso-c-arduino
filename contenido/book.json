@@ -1,9 +1,9 @@
 {
     "gitbook": "3.2.3",
-    "plugins": ["katex", "include", "mermaid"],
+    "plugins": ["katex", "include", "mermaid", "-sharing"],
     "links": {
         "sidebar": {
-            "Contact us": "mailto:contact@example.org"
+            "Repositorio en GitHub": "https://github.com/euroavia-sevilla/curso-c-arduino"
         }
     },
     "pdf": {
@@ -11,12 +11,12 @@
         "fontSize": 12,
         "paperSize": "a4",
         "margin": {
-            "right": 62,
-            "left": 62,
-            "top": 36,
-            "bottom": 36
+            "right": 72,
+            "left": 72,
+            "top": 72,
+            "bottom": 72
         },
-        "headerTemplate": null,
-        "footerTemplate": null
+        "headerTemplate": "_TITLE_",
+        "footerTemplate": "_SECTION_ | _PAGENUM_"
     }
 }

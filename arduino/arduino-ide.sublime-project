@@ -1,0 +1,19 @@
+{
+  "folders":
+  [
+    {
+      "path": "."
+    }
+  ],
+  "build_systems":
+  [
+    {
+      "name": "Compile and execute current Arduino sketch",
+      "shell_cmd": "cd $project_path/sketch && ./compile-and-flash.sh $file_base_name /dev/ttyUSB0"
+    },
+    {
+      "name": "Test sublime build system vars",
+      "shell_cmd": "echo project ............: $project && echo project_path .......: $project_path && echo project_name .......: $project_name && echo project_extension ..: $project_extension && echo project_base_name ..: $project_base_name && echo file ...............: $file && echo file_path ..........: $file_path && echo file_name ..........: $file_name && echo file_extension .....: $file_extension && echo file_base_name .....: $file_base_name && echo packages ...........: $packages && echo project_path regex .: ${project_path/^.*[\\/|\\\\]//}"
+    }
+  ]
+}
