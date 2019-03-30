@@ -9,3 +9,4 @@ vendor/
 \.bundle/
 contenido/_book
 contenido/node_modules
+workshop_site

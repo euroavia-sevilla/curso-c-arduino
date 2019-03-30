@@ -1,0 +1,32 @@
+[submodule "arduino/workshop-ws/alereal96"]
+  path = arduino/workshop-ws/alereal96
+  url = git@github.com:alereal96/arduino-ws.git
+
+[submodule "arduino/workshop-ws/alvaromarbla"]
+  path = arduino/workshop-ws/alvaromarbla
+  url = git@github.com:alvaromarbla/arduino-ws.git
+
+[submodule "arduino/workshop-ws/Diego4121999"]
+  path = arduino/workshop-ws/Diego4121999
+  url = git@github.com:Diego4121999/arduino-ws.git
+
+[submodule "arduino/workshop-ws/Enriquegp00"]
+  path = arduino/workshop-ws/Enriquegp00
+  url = git@github.com:Enriquegp00/arduino-ws.git
+
+[submodule "arduino/workshop-ws/jeronimoagullo"]
+  path = arduino/workshop-ws/jeronimoagullo
+  url = git@github.com:jeronimoagullo/arduino-ws.git
+
+[submodule "arduino/workshop-ws/lorcalrol"]
+  path = arduino/workshop-ws/lorcalrol
+  url = git@github.com:lorcalrol/arduino-ws.git
+
+[submodule "arduino/workshop-ws/lucgalgal"]
+  path = arduino/workshop-ws/lucgalgal
+  url = git@github.com:lucgalgal/arduino-ws.git
+
+[submodule "arduino/workshop-ws/VirginiaOSC"]
+  path = arduino/workshop-ws/VirginiaOSC
+  url = git@github.com:VirginiaOSC/arduino-ws.git
+
