@@ -7,10 +7,18 @@ site_author: "CieNTi"
 copyright: "2019 - CieNTi - Euroavia Sevilla"
 site_name: "Taller de C y Arduino"
 nav:
-  - Introducción: index.md
-  - Lenguaje C: index.md
-  - Hardware: index.md
-  - Arduino: index.md
+  - Introducción: introduccion.md
+  - Lenguaje C: lenguaje-c.md
+  - Hardware: hardware.md
+  - Arduino:
+    - Introducción: arduino/introduccion.md
+    - Practica 1: arduino/practica-01.md
+    - Practica 2: arduino/practica-02.md
+    - Practica 3: arduino/practica-03.md
+    - Practica 4: arduino/practica-04.md
+  - Otros recursos: otros-recursos.md
+markdown_extensions:
+  - smarty
 plugins:
   - search
 theme: flatly

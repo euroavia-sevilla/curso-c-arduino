@@ -1,17 +1,12 @@
-# Welcome to MkDocs
+# Taller de C y Arduino sobre ESP8266
 
-For full documentation visit [mkdocs.org](https://mkdocs.org).
+El taller se dividirá en 4 secciones:
 
-## Commands
-
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs help` - Print this help message.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+- [Introducción](introduccion)    
+Presentación de las aplicaciones y herramientas que serán necesarias a lo largo del taller, asi como de los objetivos esperados
+- [Lenguaje C](lenguaje-c)    
+Breve introducción y nociones básicas de C, necesarias antes de adentrarse en Arduino
+- [Hardware](hardware)    
+Descripción y datos técnicos del hardware que se usará para el taller
+- [Arduino](arduino/introduccion.md)    
+Introducción a Arduino y prácticas

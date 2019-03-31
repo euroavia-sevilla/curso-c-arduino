@@ -69,5 +69,7 @@ else
 
   # recover stash
   # git stash pop
-  echo "Instead of stashing, latest modified data is on last commit"
+  echo ">>"
+  echo ">> Instead of stashing, latest modified data is on last commit"
+  echo ">>"
 fi
