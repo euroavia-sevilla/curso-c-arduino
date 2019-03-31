@@ -1,10 +1,16 @@
 docs_dir: "workshop"
 site_dir: "workshop_site"
 repo_url: "https://github.com/euroavia-sevilla/curso-c-arduino"
+edit_uri: "edit/master/workshop/"
 site_description: "Contenido del taller impartido para Euroavia Sevilla de C y Arduino sobre LOLIN-WeMos D1 Mini - ESP8266"
 site_author: "CieNTi"
-copyright: "2019 - Euroavia Sevilla"
-site_name: "Taller de C y Arduino - Euroavia Sevilla"
+copyright: "2019 - CieNTi - Euroavia Sevilla"
+site_name: "Taller de C y Arduino"
 nav:
-  - Inicio: index.md
+  - Introducción: index.md
+  - Lenguaje C: index.md
+  - Hardware: index.md
+  - Arduino: index.md
+plugins:
+  - search
 theme: flatly
