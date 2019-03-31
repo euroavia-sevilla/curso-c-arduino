@@ -25,7 +25,7 @@ else
 
   # Save working status
   git add .
-  git stash -a
+  git commit -a -m "Pre-doc commit"
 
   # Checkout to the gh-pages branch
   git checkout gh-pages
