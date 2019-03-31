@@ -1,4 +1,4 @@
-# Bus I2C
+# Práctica 2 - El bus I2C
 
 A medida que la capacidad integración en un único chip aumentaba, el número de componentes comerciales disponibles, aumentaba exponencialmente. Cada vez era, y es, más sencillo fabricar bloques de construcción electrónicos integrados en un único chip, y pronto el grosor de los catálogos de los fabricantes, engordó peligrosamente.
 

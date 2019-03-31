@@ -6,19 +6,23 @@ site_description: "Contenido del taller impartido para Euroavia Sevilla de C y A
 site_author: "CieNTi"
 copyright: "2019 - CieNTi - Euroavia Sevilla"
 site_name: "Taller de C y Arduino"
+include_homepage_in_sidebar: false
 nav:
-  - Introducción: introduccion.md
-  - Lenguaje C: lenguaje-c.md
-  - Hardware: hardware.md
+  - Home: README.md
+  - introduccion/README.md
+  - C: lenguaje-c/README.md
+  - hardware/README.md
   - Arduino:
-    - Introducción: arduino/introduccion.md
-    - Practica 1: arduino/practica-01.md
-    - Practica 2: arduino/practica-02.md
-    - Practica 3: arduino/practica-03.md
-    - Practica 4: arduino/practica-04.md
-  - Otros recursos: otros-recursos.md
+    - arduino/README.md
+    - arduino/practica-01/README.md
+    - arduino/practica-02/README.md
+    - arduino/practica-03/README.md
+    - arduino/practica-04/README.md
+  - Otros recursos:
+    - otros-recursos/README.md
+    - otros-recursos/mqtt-broker.md
 markdown_extensions:
   - smarty
 plugins:
   - search
-theme: flatly
+theme: cinder

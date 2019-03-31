@@ -13,7 +13,7 @@ echo "APP_PATH .........: ${APP_PATH}"
 echo "APP_SCRIPT_NAME ..: ${APP_SCRIPT_NAME}"
 
 # Install the required files
-#pip3 install mkdocs mkdocs-bootswatch mkdocs-git-revision-date-plugin
+#pip3 install mkdocs mkdocs-cinder
 
 # Add 'upload' as first argument to build & upload to GitHub Pages
 if [ "$1" != "upload" ]; then
