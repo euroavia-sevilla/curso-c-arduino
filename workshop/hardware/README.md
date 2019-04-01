@@ -4,6 +4,14 @@ Tras analizar la oferta actual de placas de desarrollo soportados por Arduino, e
 
 En líneas generales esta placa ofrece un equilibrio entre tamaño y peso frente a conectividad y posibilidades, ya que aparte de integrar un chipset Wi-Fi, es posible programarla sin ningún dispositivo extra y gracias a su arquitectura interna, prácticamente todos los GPIOs son reprogramables, pudiendose intercambiar las funcionalidades de Serie, I2C, SPI, ...
 
+Tambien se estudia que sensórica añadir, siempre que estuviera disponible en formato placa de desarrollo para evitar la soldadura SMD, seleccionando finalmente los sensores BME280 y MPU6050, temperatura/humedad/presion y acelerómetro/giróscopo, respectivamente.
+
+Puesto que no se necesita ningún otro elemento para que pueda funcionar, se monta cada sensor en el bus I2C, que desde el punto de vista esquemático queda como:
+
+![D1-and-sensors.png](D1-and-sensors.png)
+
+A continuación se presenta información básica y enlaces a documentación de cada uno de los elementos, siendo lo necesario para poder entenderlos y programarlos adecuadamente.
+
 ## Microcontrolador ESP8266
 
 > Descargar [<i class="fa fa-cloud-download-alt" style="color:#FA023C"></i> hoja de datos completa ESP8266EX](ESP8266EX_datasheet_en.pdf)
