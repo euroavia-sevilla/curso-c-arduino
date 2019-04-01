@@ -13,7 +13,7 @@ echo "APP_PATH .........: ${APP_PATH}"
 echo "APP_SCRIPT_NAME ..: ${APP_SCRIPT_NAME}"
 
 # Install the required files
-#pip3 install mkdocs mkdocs-bootswatch mkdocs-git-revision-date-plugin
+#pip3 install mkdocs mkdocs-cinder
 
 # Add 'upload' as first argument to build & upload to GitHub Pages
 if [ "$1" != "upload" ]; then
@@ -27,11 +27,11 @@ else
   git add .
   git commit -a -m "Pre-doc commit"
 
-  # Checkout to the gh-pages branch
-  git checkout gh-pages
+  # Checkout to the site branch
+  git checkout site
 
   # Pull the latest updates
-  git pull origin gh-pages --rebase
+  git pull origin site --rebase
 
   # Clean
   for file in ./*; do
@@ -62,12 +62,14 @@ else
   git commit -a -m "Update docs"
 
   # push to the origin
-  git push origin gh-pages
+  git push origin site
 
   # checkout to the master branch
   git checkout master
 
   # recover stash
   # git stash pop
-  echo "Instead of stashing, latest modified data is on last commit"
+  echo ">>"
+  echo ">> Instead of stashing, latest modified data is on last commit"
+  echo ">>"
 fi
