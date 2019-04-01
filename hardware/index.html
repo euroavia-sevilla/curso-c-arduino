@@ -206,6 +206,10 @@
 <h1 id="hardware">Hardware</h1>
 <p>Tras analizar la oferta actual de placas de desarrollo soportados por Arduino, en base a su conectividad, tamaño y peso, se optó por la placa <strong>D1 Mini</strong> de <strong>WeMos</strong>, basada en un chip <strong>ESP8266</strong>.</p>
 <p>En líneas generales esta placa ofrece un equilibrio entre tamaño y peso frente a conectividad y posibilidades, ya que aparte de integrar un chipset Wi-Fi, es posible programarla sin ningún dispositivo extra y gracias a su arquitectura interna, prácticamente todos los GPIOs son reprogramables, pudiendose intercambiar las funcionalidades de Serie, I2C, SPI, &hellip;</p>
+<p>Tambien se estudia que sensórica añadir, siempre que estuviera disponible en formato placa de desarrollo para evitar la soldadura SMD, seleccionando finalmente los sensores BME280 y MPU6050, temperatura/humedad/presion y acelerómetro/giróscopo, respectivamente.</p>
+<p>Puesto que no se necesita ningún otro elemento para que pueda funcionar, se monta cada sensor en el bus I2C, que desde el punto de vista esquemático queda como:</p>
+<p><img alt="D1-and-sensors.png" src="D1-and-sensors.png" /></p>
+<p>A continuación se presenta información básica y enlaces a documentación de cada uno de los elementos, siendo lo necesario para poder entenderlos y programarlos adecuadamente.</p>
 <h2 id="microcontrolador-esp8266">Microcontrolador ESP8266</h2>
 <blockquote>
 <p>Descargar <a href="ESP8266EX_datasheet_en.pdf"><i class="fa fa-cloud-download-alt" style="color:#FA023C"></i> hoja de datos completa ESP8266EX</a></p>
@@ -570,5 +574,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-04-01 08:44:08
+Build Date UTC : 2019-04-01 17:14:57
 -->
