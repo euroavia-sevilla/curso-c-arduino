@@ -6,7 +6,6 @@ site_description: "Contenido del taller impartido para Euroavia Sevilla de C y A
 site_author: "CieNTi"
 copyright: "2019 - CieNTi - Euroavia Sevilla"
 site_name: "Taller de C y Arduino"
-include_homepage_in_sidebar: false
 nav:
   - Home: README.md
   - introduccion/README.md

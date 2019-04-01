@@ -10,5 +10,5 @@ Se ha levantado un servidor con SO Debian 9, accesible a traves de `iot.tesla.st
 
 Roadmap:
 
-- [MQTT Broker](otros-recursos/mqtt-broker.md) - Información técnica de la instalación del broker MQTT
+- [MQTT Broker](mqtt-broker.md) - Información técnica de la instalación del broker MQTT
 - [Dashboard (TBD)]() - Información técnica de la presentación via web de los datos recogidos por MQTT
