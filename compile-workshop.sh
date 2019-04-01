@@ -27,11 +27,11 @@ else
   git add .
   git commit -a -m "Pre-doc commit"
 
-  # Checkout to the gh-pages branch
-  git checkout gh-pages
+  # Checkout to the site branch
+  git checkout site
 
   # Pull the latest updates
-  git pull origin gh-pages --rebase
+  git pull origin site --rebase
 
   # Clean
   for file in ./*; do
@@ -62,7 +62,7 @@ else
   git commit -a -m "Update docs"
 
   # push to the origin
-  git push origin gh-pages
+  git push origin site
 
   # checkout to the master branch
   git checkout master
