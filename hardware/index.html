@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contenido del taller impartido para Euroavia Sevilla de C y Arduino sobre LOLIN-WeMos D1 Mini - ESP8266">
+    <meta name="author" content="CieNTi">
+    
+    <link rel="../img/favicon.ico">
+
+    
+    <title>Hardware - Taller de C y Arduino</title>
+    
+
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../css/base.min.css" rel="stylesheet">
+    <link href="../css/cinder.min.css" rel="stylesheet">
+    <link href="../css/highlight.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.6.28/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+
+     
+</head>
+
+<body class="homepage" >
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+
+            <a class="navbar-brand" href="..">Taller de C y Arduino</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../introduccion/">Introducción</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../lenguaje-c/">C</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Hardware</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Arduino <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../arduino/">Introducción a Arduino</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../arduino/practica-01/">Práctica 1</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../arduino/practica-02/">Práctica 2 - El bus I2C</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../arduino/practica-03/">Práctica 3</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../arduino/practica-04/">Práctica 4</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Otros recursos <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../otros-recursos/">Otros recursos</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../otros-recursos/mqtt-broker/">MQTT Broker</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../lenguaje-c/">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../arduino/">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/euroavia-sevilla/curso-c-arduino/edit/master/workshop/hardware/README.md"><i class="fab fa-github"></i> Edit on GitHub</a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="first-level active"><a href="#hardware">Hardware</a></li>
+            <li class="second-level"><a href="#microcontrolador-esp8266">Microcontrolador ESP8266</a></li>
+                
+                <li class="third-level"><a href="#wi-fi">Wi-Fi</a></li>
+                <li class="third-level"><a href="#hardware_1">Hardware</a></li>
+                <li class="third-level"><a href="#software">Software</a></li>
+            <li class="second-level"><a href="#placa-base-wemos-d1-mini">Placa base: WeMos D1 Mini</a></li>
+                
+                <li class="third-level"><a href="#donde-comprar">Dónde comprar</a></li>
+            <li class="second-level"><a href="#sensor-bme280-temperatura-humedad-y-presion">Sensor BME280: Temperatura, humedad y presion</a></li>
+                
+                <li class="third-level"><a href="#donde-comprar_1">Dónde comprar</a></li>
+            <li class="second-level"><a href="#sensor-mpu6050-giroscopo-de-3-ejes-y-acelerometro-de-3-ejes">Sensor MPU6050: Giroscopo de 3 ejes y acelerómetro de 3 ejes</a></li>
+                
+                <li class="third-level"><a href="#donde-comprar_2">Dónde comprar</a></li>
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="hardware">Hardware</h1>
+<p>Tras analizar la oferta actual de placas de desarrollo soportados por Arduino, en base a su conectividad, tamaño y peso, se optó por la placa <strong>D1 Mini</strong> de <strong>WeMos</strong>, basada en un chip <strong>ESP8266</strong>.</p>
+<p>En líneas generales esta placa ofrece un equilibrio entre tamaño y peso frente a conectividad y posibilidades, ya que aparte de integrar un chipset Wi-Fi, es posible programarla sin ningún dispositivo extra y gracias a su arquitectura interna, prácticamente todos los GPIOs son reprogramables, pudiendose intercambiar las funcionalidades de Serie, I2C, SPI, &hellip;</p>
+<h2 id="microcontrolador-esp8266">Microcontrolador ESP8266</h2>
+<blockquote>
+<p>Descargar <a href="ESP8266EX_datasheet_en.pdf"><i class="fa fa-cloud-download-alt" style="color:#FA023C"></i> hoja de datos completa ESP8266EX</a></p>
+</blockquote>
+<p>Se indican a continuación las caracteristicas generales del micro:</p>
+<h3 id="wi-fi">Wi-Fi</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Items</th>
+<th align="left">Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Certification</td>
+<td align="left">Wi-Fi Alliance</td>
+</tr>
+<tr>
+<td align="left">Protocols</td>
+<td align="left">802.11 b/g/n (HT20)</td>
+</tr>
+<tr>
+<td align="left">Frequency Range</td>
+<td align="left">2.4G ~ 2.5G (2400M ~ 2483.5M)</td>
+</tr>
+<tr>
+<td align="left">TX Power</td>
+<td align="left">802.11 b: +20 dBm</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">802.11 g: +17 dBm</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">802.11 n: +14 dBm</td>
+</tr>
+<tr>
+<td align="left">Rx Sensitivity</td>
+<td align="left">802.11 b: –91 dbm (11 Mbps)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">802.11 g: –75 dbm (54 Mbps)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">802.11 n: –72 dbm (MCS7)</td>
+</tr>
+<tr>
+<td align="left">Antenna</td>
+<td align="left">PCB Trace, External, IPEX Connector, Ceramic Chip</td>
+</tr>
+</tbody>
+</table>
+<h3 id="hardware_1">Hardware</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Items</th>
+<th align="left">Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">CPU</td>
+<td align="left">Tensilica L106 32-bit processor</td>
+</tr>
+<tr>
+<td align="left">Peripheral Interface</td>
+<td align="left">UART/SDIO/SPI/I2C/I2S/IR Remote Control</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">GPIO/ADC/PWM/LED Light &amp; Button</td>
+</tr>
+<tr>
+<td align="left">Operating Voltage</td>
+<td align="left">2.5V ~ 3.6V</td>
+</tr>
+<tr>
+<td align="left">Operating Current</td>
+<td align="left">Average value: 80 mA</td>
+</tr>
+<tr>
+<td align="left">Operating Temperature Range</td>
+<td align="left">–40°C ~ 125°C</td>
+</tr>
+<tr>
+<td align="left">Package Size</td>
+<td align="left">QFN32-pin (5 mm x 5 mm)</td>
+</tr>
+<tr>
+<td align="left">External Interface</td>
+<td align="left">-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="software">Software</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Items</th>
+<th align="left">Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Wi-Fi Mode</td>
+<td align="left">Station/SoftAP/SoftAP+Station</td>
+</tr>
+<tr>
+<td align="left">Security</td>
+<td align="left">WPA/WPA2</td>
+</tr>
+<tr>
+<td align="left">Encryption</td>
+<td align="left">WEP/TKIP/AES</td>
+</tr>
+<tr>
+<td align="left">Firmware Upgrade</td>
+<td align="left">UART Download / OTA (via network)</td>
+</tr>
+<tr>
+<td align="left">Software Development</td>
+<td align="left">Supports Cloud Server Development / Firmware and SDK</td>
+</tr>
+<tr>
+<td align="left">Network Protocols</td>
+<td align="left">IPv4, TCP/UDP/HTTP</td>
+</tr>
+<tr>
+<td align="left">User Configuration</td>
+<td align="left">AT Instruction Set, Cloud Server, Android/iOS App</td>
+</tr>
+</tbody>
+</table>
+<h2 id="placa-base-wemos-d1-mini">Placa base: WeMos D1 Mini</h2>
+<p><a href="esp8266-wemos-d1-mini-pinout.png"><img alt="Pinout de WeMos D1 Mini" src="esp8266-wemos-d1-mini-pinout_small.png" /></a></p>
+<blockquote>
+<p>Descargar <a href="esp8266-wemos-d1-mini-pinout_schematic_v3.0.0.pdf"><i class="fa fa-cloud-download-alt" style="color:#FA023C"></i> esquemático D1 Mini</a></p>
+<p><a href="https://wiki.wemos.cc/products:d1:d1_mini"><i class="fa fa-link" style="color:#FA023C"></i> Pagina oficial de la placa D1 Mini</a></p>
+</blockquote>
+<h3 id="donde-comprar">Dónde comprar</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Item</th>
+<th align="center">Cantidad</th>
+<th align="center">Precio</th>
+<th align="center">Precio Ud.</th>
+<th align="center">Ancho (mm)</th>
+<th align="center">Alto (mm)</th>
+<th align="center">Grosor (mm)</th>
+<th align="center">Peso (g)</th>
+<th align="center">Link Amazon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">D1 Mini</td>
+<td align="center">5</td>
+<td align="center">22.99</td>
+<td align="center">4.6</td>
+<td align="center">25.6</td>
+<td align="center">34.2</td>
+<td align="center">10</td>
+<td align="center">3</td>
+<td align="center"><a href="https://www.amazon.es/dp/B076F81VZT/ref=cm_sw_r_tw_dp_U_x_FnhwCbJXNS727">Link</a></td>
+</tr>
+<tr>
+<td align="center">D1 Mini</td>
+<td align="center">3</td>
+<td align="center">14.99</td>
+<td align="center">5</td>
+<td align="center">25.6</td>
+<td align="center">34.2</td>
+<td align="center">10</td>
+<td align="center">3</td>
+<td align="center"><a href="https://www.amazon.es/dp/B076F53B6S/ref=cm_sw_r_tw_dp_U_x_Y5hwCbAY80Q19">Link</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="sensor-bme280-temperatura-humedad-y-presion">Sensor BME280: Temperatura, humedad y presion</h2>
+<p><img alt="BME280_breakout-board.png" src="BME280_breakout-board.png" /></p>
+<blockquote>
+<p>Descargar <a href="BME280_datasheet_en.pdf"><i class="fa fa-cloud-download-alt" style="color:#FA023C"></i> hoja de datos completa BME280</a></p>
+</blockquote>
+<h3 id="donde-comprar_1">Dónde comprar</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Item</th>
+<th align="center">Cantidad</th>
+<th align="center">Precio</th>
+<th align="center">Precio Ud.</th>
+<th align="center">Pinout compatible D1 Mini</th>
+<th align="center">Ancho (mm)</th>
+<th align="center">Alto (mm)</th>
+<th align="center">Grosor (mm)</th>
+<th align="center">Peso (g)</th>
+<th align="center">Link Amazon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Modulo BME280</td>
+<td align="center">5</td>
+<td align="center">26.12</td>
+<td align="center">5.23 (+0.53/-0.67)</td>
+<td align="center">No, linea unica</td>
+<td align="center">10</td>
+<td align="center">12</td>
+<td align="center">5</td>
+<td align="center">1</td>
+<td align="center"><a href="https://www.amazon.es/dp/B07HMQMW6M/ref=cm_sw_r_tw_dp_U_x_BDhwCbJR0T7HB">Link</a></td>
+</tr>
+<tr>
+<td align="center">Modulo BME280</td>
+<td align="center">5</td>
+<td align="center">26.99</td>
+<td align="center">5.4 (+0.7/-0.5)</td>
+<td align="center">No, linea unica</td>
+<td align="center">10</td>
+<td align="center">12</td>
+<td align="center">5</td>
+<td align="center">1</td>
+<td align="center"><a href="https://www.amazon.es/dp/B0799FH5PG/ref=cm_sw_r_tw_dp_U_x_0DhwCbT54YETR">Link</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="sensor-mpu6050-giroscopo-de-3-ejes-y-acelerometro-de-3-ejes">Sensor MPU6050: Giroscopo de 3 ejes y acelerómetro de 3 ejes</h2>
+<p><img alt="MPU-6050_breakout-board.png" src="MPU-6050_breakout-board.png" /></p>
+<blockquote>
+<p>Descargar <a href="MPU-6050_DataSheet_V3 4.pdf"><i class="fa fa-cloud-download-alt" style="color:#FA023C"></i> hoja de datos parcial MPU6050</a></p>
+<p>Descargar <a href="MPU-6000-Register-Map1.pdf"><i class="fa fa-cloud-download-alt" style="color:#FA023C"></i> mapa de registros MPU6050</a></p>
+</blockquote>
+<h3 id="donde-comprar_2">Dónde comprar</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Item</th>
+<th align="center">Cantidad</th>
+<th align="center">Precio</th>
+<th align="center">Precio Ud.</th>
+<th align="center">Pinout compatible D1 Mini</th>
+<th align="center">Ancho (mm)</th>
+<th align="center">Alto (mm)</th>
+<th align="center">Grosor (mm)</th>
+<th align="center">Peso (g)</th>
+<th align="center">Link Amazon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Modulo MPU-6050</td>
+<td align="center">6</td>
+<td align="center">14.29</td>
+<td align="center">2.4</td>
+<td align="center">No, linea unica</td>
+<td align="center">20</td>
+<td align="center">16</td>
+<td align="center">5</td>
+<td align="center">1</td>
+<td align="center"><a href="https://www.amazon.es/dp/B07D7SSTFW/ref=cm_sw_r_tw_dp_U_x_iWhwCbYCAJV6C">Link</a></td>
+</tr>
+<tr>
+<td align="center">Modulo MPU-6050</td>
+<td align="center">10</td>
+<td align="center">31.99</td>
+<td align="center">3.2</td>
+<td align="center">No, linea unica</td>
+<td align="center">20</td>
+<td align="center">16</td>
+<td align="center">5</td>
+<td align="center">1</td>
+<td align="center"><a href="https://www.amazon.es/dp/B01N96D51D/ref=cm_sw_r_tw_dp_U_x_WOhwCbS8G4XTD">Link</a></td>
+</tr>
+<tr>
+<td align="center">Modulo MPU-6050</td>
+<td align="center">3</td>
+<td align="center">13.31</td>
+<td align="center">4.43</td>
+<td align="center">No, linea unica</td>
+<td align="center">20</td>
+<td align="center">16</td>
+<td align="center">5</td>
+<td align="center">1</td>
+<td align="center"><a href="https://www.amazon.es/dp/B07FVKWJF6/ref=cm_sw_r_tw_dp_U_x_SUhwCbPK351RC">Link</a></td>
+</tr>
+<tr>
+<td align="center">Modulo MPU-6050</td>
+<td align="center">3</td>
+<td align="center">13.37</td>
+<td align="center">4.46</td>
+<td align="center">No, linea unica</td>
+<td align="center">20</td>
+<td align="center">16</td>
+<td align="center">5</td>
+<td align="center">1</td>
+<td align="center"><a href="https://www.amazon.es/dp/B07GNJLN46/ref=cm_sw_r_tw_dp_U_x_VRhwCbA2Q11TK">Link</a></td>
+</tr>
+</tbody>
+</table></div>
+        
+        
+    </div>
+
+    <footer class="col-md-12 text-center">
+        
+        <hr>
+        <p>
+        <small>2019 - CieNTi - Euroavia Sevilla<br></small>
+        
+        <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p></small>
+
+        
+        
+    </footer>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>
+    var base_url = '..';
+    </script>
+    <script src="../js/base.js"></script>
+    <script src="../search/main.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2019-04-01 08:44:08
+-->

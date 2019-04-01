@@ -8,20 +8,20 @@
     <meta name="description" content="Contenido del taller impartido para Euroavia Sevilla de C y Arduino sobre LOLIN-WeMos D1 Mini - ESP8266">
     <meta name="author" content="CieNTi">
     
-    <link rel="img/favicon.ico">
+    <link rel="../img/favicon.ico">
 
     
-    <title>Home - Taller de C y Arduino</title>
+    <title>C - Taller de C y Arduino</title>
     
 
     <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
     <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
-    <link href="css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="css/base.min.css" rel="stylesheet">
-    <link href="css/cinder.min.css" rel="stylesheet">
-    <link href="css/highlight.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../css/base.min.css" rel="stylesheet">
+    <link href="../css/cinder.min.css" rel="stylesheet">
+    <link href="../css/highlight.min.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -61,7 +61,7 @@
 
             <!-- Main title -->
 
-            <a class="navbar-brand" href=".">Taller de C y Arduino</a>
+            <a class="navbar-brand" href="..">Taller de C y Arduino</a>
         </div>
 
         <!-- Expanded navigation -->
@@ -70,26 +70,26 @@
                 <ul class="nav navbar-nav">
                 
                 
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../introduccion/">Introducción</a>
+                    </li>
+                
+                
+                
                     <li class="active">
-                        <a href=".">Home</a>
+                        <a href="./">C</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="introduccion/">Introducción</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="lenguaje-c/">C</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="hardware/">Hardware</a>
+                        <a href="../hardware/">Hardware</a>
                     </li>
                 
                 
@@ -100,31 +100,31 @@
                         
                             
 <li >
-    <a href="arduino/">Introducción a Arduino</a>
+    <a href="../arduino/">Introducción a Arduino</a>
 </li>
 
                         
                             
 <li >
-    <a href="arduino/practica-01/">Práctica 1</a>
+    <a href="../arduino/practica-01/">Práctica 1</a>
 </li>
 
                         
                             
 <li >
-    <a href="arduino/practica-02/">Práctica 2 - El bus I2C</a>
+    <a href="../arduino/practica-02/">Práctica 2 - El bus I2C</a>
 </li>
 
                         
                             
 <li >
-    <a href="arduino/practica-03/">Práctica 3</a>
+    <a href="../arduino/practica-03/">Práctica 3</a>
 </li>
 
                         
                             
 <li >
-    <a href="arduino/practica-04/">Práctica 4</a>
+    <a href="../arduino/practica-04/">Práctica 4</a>
 </li>
 
                         
@@ -139,13 +139,13 @@
                         
                             
 <li >
-    <a href="otros-recursos/">Otros recursos</a>
+    <a href="../otros-recursos/">Otros recursos</a>
 </li>
 
                         
                             
 <li >
-    <a href="otros-recursos/mqtt-broker/">MQTT Broker</a>
+    <a href="../otros-recursos/mqtt-broker/">MQTT Broker</a>
 </li>
 
                         
@@ -161,18 +161,18 @@
                             <i class="fas fa-search"></i> Search
                         </a>
                     </li>
-                    <li class="disabled">
-                        <a rel="next" >
+                    <li >
+                        <a rel="next" href="../introduccion/">
                             <i class="fas fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="introduccion/">
+                        <a rel="prev" href="../hardware/">
                             Next <i class="fas fa-arrow-right"></i>
                         </a>
                     </li>
                     <li>
-                        <a href="https://github.com/euroavia-sevilla/curso-c-arduino/edit/master/workshop/README.md"><i class="fab fa-github"></i> Edit on GitHub</a>
+                        <a href="https://github.com/euroavia-sevilla/curso-c-arduino/edit/master/workshop/lenguaje-c/README.md"><i class="fab fa-github"></i> Edit on GitHub</a>
                     </li>
             </ul>
         </div>
@@ -184,29 +184,40 @@
         
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="first-level active"><a href="#taller-de-c-y-arduino-para-euroavia-sevilla"> Taller de C y Arduino para Euroavia Sevilla</a></li>
-            <li class="second-level"><a href="#introduccion">Introducción</a></li>
+        <li class="first-level active"><a href="#lenguaje-c">Lenguaje C</a></li>
+            <li class="second-level"><a href="#estandar-de-c-c99">Estandar de C: C99</a></li>
                 
-            <li class="second-level"><a href="#lenguaje-c">Lenguaje C</a></li>
-                
-            <li class="second-level"><a href="#hardware">Hardware</a></li>
-                
-            <li class="second-level"><a href="#arduino">Arduino</a></li>
+            <li class="second-level"><a href="#tutorial-de-cc-de-tenoukcom">Tutorial de C/C++ de tenouk.com</a></li>
                 
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
 
-<h1 id="taller-de-c-y-arduino-para-euroavia-sevilla"><i class="fas fa-microchip" style="color:#FA023C"></i> Taller de C y Arduino <small>para Euroavia Sevilla</small></h1>
-<p>Se dividirá en las siguientes secciones:</p>
-<h2 id="introduccion"><a href="introduccion">Introducción</a></h2>
-<p>Presentación de las aplicaciones y herramientas que serán necesarias a lo largo del taller, asi como de los objetivos esperados</p>
-<h2 id="lenguaje-c"><a href="lenguaje-c">Lenguaje C</a></h2>
-<p>Breve introducción y nociones básicas de C, necesarias antes de adentrarse en Arduino</p>
-<h2 id="hardware"><a href="hardware">Hardware</a></h2>
-<p>Descripción y datos técnicos del hardware que se usará para el taller</p>
-<h2 id="arduino"><a href="arduino">Arduino</a></h2>
-<p>Introducción a Arduino y prácticas</p></div>
+<h1 id="lenguaje-c">Lenguaje C</h1>
+<h2 id="estandar-de-c-c99">Estandar de C: C99</h2>
+<p>Hay varios estandares que se pueden seguir para programar en C/C++, pero es muy aconsejable ceñirse a C99 mientras sea posible, ya que asegurará una compatibilidad enorme entre diferentes sistemas.</p>
+<p><a href="extras/specs/ISO-IEC-9899_C99-Standard.pdf">:page_facing_up: ISO-IEC-9899_C99-Standard.pdf</a></p>
+<h2 id="tutorial-de-cc-de-tenoukcom">Tutorial de C/C++ de tenouk.com</h2>
+<p><strong>Fuente</strong>: <a href="https://www.tenouk.com/download.html">Link a la pagina de descarga</a> de donde se han sacado estos PDF</p>
+<p>Se incluyen los siguientes ficheros para facilitar la disponibilidad de estos en cada puesto de trabajo.</p>
+<p>El usuario solo tendra que utilizar <em>git</em> y descargar la rama para poder acceder a este contenido. Igualmente se enlazan desde aqui para facilitar la navegacion web:</p>
+<ul>
+<li><a href="extras/tutorial-C_tenouk.com/Module1.pdf">:page_facing_up: Module 1. C / C++ Introduction. Intro and history, building and running the first C/C++ program</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module2.pdf">:page_facing_up: Module 2. C / C++ Basic Data Types [1/2/3]. The basic C &amp; C++ data types story and program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module3.pdf">:page_facing_up: Module 3. C / C++ Statements, Expressions &amp; Operators [1/2/3]. Statements, expressions and operators used in C &amp; C++ story and program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module4.pdf">:page_facing_up: Module 4. C / C++ Functions [1/2/3/4]. Functions story and program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module5.pdf">:page_facing_up: Module 5. C Formatted I/O [1/2]. The printf() and scanf() story and program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module6.pdf">:page_facing_up: Module 6. C / C++ Program Controls [1/2]. Loops, if-else, while, do-while, for, switch-case-break etc. story and program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module7.pdf">:page_facing_up: Module 7. C / C++ Arrays [1/2]. Array or aggregated data type, story and program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module8.pdf">:page_facing_up: Module 8. C / C++ Pointers [1/2/3]. Pointers, another very important data type, story and program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module9.pdf">:page_facing_up: Module 9. C File I/O [1/2/3]. Standard file input/output, creating, reading and writing files, story and program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module10.pdf">:page_facing_up: Module 10. C / C++ Preprocessor Directives. Preprocessor directives used in C/C++, #include, macros, inline functions etc</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/Module11.pdf">:page_facing_up: Module 11. C / C++ Type Specifiers. struct, typedef, union &amp; enum - Various C/C++ aggregated data types and typedef</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/ModuleW.pdf">:page_facing_up: Module W. Assembler, Compiler &amp; Linker. Quite a complete story how C assembled, compiled, linked and run</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/ModuleX.pdf">:page_facing_up: Module X. C&rsquo;s Character and String Manipulation. Using standard C predefined functions in manipulating characters and strings, full of working program examples</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/ModuleY.pdf">:page_facing_up: Module Y. main() and Command Line Arguments. A complete story of the main() function</a></li>
+<li><a href="extras/tutorial-C_tenouk.com/ModuleZ.pdf">:page_facing_up: Module Z. C Storage and Memory Allocation. Predefined functions used in memory allocation and de-allocation in C</a></li>
+</ul></div>
         
         
     </div>
@@ -224,14 +235,14 @@
     </footer>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/bootstrap-3.0.3.min.js"></script>
-    <script src="js/highlight.pack.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../js/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <script>
-    var base_url = '.';
+    var base_url = '..';
     </script>
-    <script src="js/base.js"></script>
-    <script src="search/main.js"></script>
+    <script src="../js/base.js"></script>
+    <script src="../search/main.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">

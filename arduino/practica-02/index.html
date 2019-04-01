@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contenido del taller impartido para Euroavia Sevilla de C y Arduino sobre LOLIN-WeMos D1 Mini - ESP8266">
+    <meta name="author" content="CieNTi">
+    
+    <link rel="../../img/favicon.ico">
+
+    
+    <title>Práctica 2 - El bus I2C - Taller de C y Arduino</title>
+    
+
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/base.min.css" rel="stylesheet">
+    <link href="../../css/cinder.min.css" rel="stylesheet">
+    <link href="../../css/highlight.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.6.28/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+
+     
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+
+            <a class="navbar-brand" href="../..">Taller de C y Arduino</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../introduccion/">Introducción</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../lenguaje-c/">C</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../hardware/">Hardware</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Arduino <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../">Introducción a Arduino</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../practica-01/">Práctica 1</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Práctica 2 - El bus I2C</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../practica-03/">Práctica 3</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../practica-04/">Práctica 4</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Otros recursos <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../otros-recursos/">Otros recursos</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../otros-recursos/mqtt-broker/">MQTT Broker</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../practica-01/">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../practica-03/">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/euroavia-sevilla/curso-c-arduino/edit/master/workshop/arduino/practica-02/README.md"><i class="fab fa-github"></i> Edit on GitHub</a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="first-level active"><a href="#practica-2-el-bus-i2c">Práctica 2 - El bus I2C</a></li>
+            <li class="second-level"><a href="#programa">Programa</a></li>
+                
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="practica-2-el-bus-i2c">Práctica 2 - El bus I2C</h1>
+<p>A medida que la capacidad integración en un único chip aumentaba, el número de componentes comerciales disponibles, aumentaba exponencialmente. Cada vez era, y es, más sencillo fabricar bloques de construcción electrónicos integrados en un único chip, y pronto el grosor de los catálogos de los fabricantes, engordó peligrosamente.</p>
+<p>Era relativamente fácil encontrar esos bloques de construcción pero cuando tu diseño requería usar una docena de esos bloques, ponerlos de acuerdo y conseguir que se comunicaran eficazmente, se convirtió en un problema.</p>
+<p>Por eso, en los primeros 80, uno de los grandes fabricantes de electrónica (Phillips), propuso una norma de comunicación digital, entre los diferentes componentes de una sistema electrónico.</p>
+<p>Una norma que especificaba la velocidad, niveles de tensión, y el protocolo a seguir para conseguir esa comunicación y la hizo abierta.</p>
+<p>Esa norma se llamó Inter Integrated Circuits bus, o IIC, y pronto se convirtió en un estándar de facto en la industria. Las especificaciones han ido mejorando con los años, pero la idea básica sigue siendo la misma:</p>
+<ul>
+<li>Protocolo de dos hilos de control, uno para transmitir los datos, SDA y otro, el reloj asíncrono que indica cuando leer los datos SCL. Mas GND y 5V (cuando se requiera).</li>
+<li>Cada dispositivo conectado al bus I2C y cada uno tiene su dirección exclusiva, de 7 bits, (Asi que, en teoría, podemos conectar 27 = 128, dispositivos).</li>
+<li>Uno de estos componentes, debe actuar como master, es decir controla el reloj.</li>
+<li>No se requiere una velocidad de reloj estricta, ya que es el master quien controla el Clock.</li>
+<li>Es multi master, el master puede cambiar, pero solo uno puede estar activo a la vez, y proporciona un protocolo de arbitraje y detección de colisiones. (Si no has entendido esto, no te preocupes, todavía es pronto).</li>
+</ul>
+<p>Puedes encontrar que a este bus se le llama I2C, IIC o I2C, y también, como TWI (Two Wire Interface, o interface de 2 hilos), pero siempre es lo mismo.</p>
+<p><img alt="Diagrama de conexión I2C" src="I2C-diagram.jpg" /></p>
+<p>La idea es que todos los componentes se conecten en paralelo a las dos líneas del bus, SDA y SCL. En cada momento solo puede haber un master, en este caso, nuestro Arduino, y los demás se configuran como esclavos.</p>
+<ul>
+<li>Puede haber más de un master. La norma propone un sistema de arbitraje, para transferir el control de uno a otro, pero en un instante dado, solo uno puede ser el master.</li>
+<li>Atención a las resistencias de Pullup conectadas a SDA y SCL. Son imperativas, ya que el bus es activo bajo (Esto es, la señal activa es un 0, no un 1. Pero tranquilo, que esto no te afecta)</li>
+<li>Al conectar algo al bus I2C, es imprescindible que leas el manual para saber si los pullups los tienes que poner tú, o vienen puestos en el componente.</li>
+<li>En el caso del montaje entregado, ya existe una doble pull-up de 10 KOhm (y por lo tanto, resultante en 5K, por lo que en principio se debería admitir hasta 400 kHz en el bus).</li>
+</ul>
+<p>Y la buena noticia es que nuestro Arduino lo soporta de fábrica con una librería estándar, que utiliza dos de los pines analógicos para las funciones SDA (Datos) y SCL (Clock).</p>
+<ul>
+<li>En el <code>Arduino UNO</code>, los pines I2C están en los pines analógicos A4 (SDA) y A5 (SCL)</li>
+<li>En el <code>Arduino Mega</code> y DUE, son el 20 (SDA) y en el 21(SCL)</li>
+<li>En el <code>WeMos D1 Mini</code> entregado, son el 0 (SDA) y en el 2(SCL)</li>
+</ul>
+<p>La librería I2C, en Arduino se llama Wire, y gestiona el protocolo de comunicaciones completo, lo que es un detalle, pues nos ahorra la parte de estudiar el protocolo y escribir programas para ello (maquina de estados a bajo nivel).</p>
+<ul>
+<li>Esto es una practica habitual y recomendada, construir sobre el trabajo de terceros. Es una de las muy grandes virtudes de la comunidad Arduino y open source.</li>
+<li>Hay una gama muy amplia de librerias que dan soporte a muchisimos dispositivos, o crean funcionalidades nuevas, &hellip;</li>
+<li>Se recomienda buscar, probar y sacar conclusiones para ver tanto la calidad como el posible uso.</li>
+</ul>
+<p>Se espera que tras este ejercicio se consiga comunicar con el sensor BME280 integrado en el montaje entregado.</p>
+<h2 id="programa">Programa</h2>
+<p>Se parte de la anterior sesión, donde un programa enviaba por puerto serie 3 variables, para luego verlas o dibujarlas mediante el monitor serie o el plotter, respectivamente.</p>
+<blockquote>
+<p><strong>NOTA</strong>: La documentación oficial de la libreria <code>Wire</code> de Arduino puede encontrarse en <a href="https://www.arduino.cc/en/reference/wire">https://www.arduino.cc/en/reference/wire</a></p>
+<p><strong>NOTA</strong>: Toda la información de las librerias del ESP8266 para Arduíno pueden encontrarse en <a href="https://arduino-esp8266.readthedocs.io/en/latest/libraries.html">https://arduino-esp8266.readthedocs.io/en/latest/libraries.html</a></p>
+<p><strong>NOTA</strong>: Toda la información referente al sensor BME280 que trataremos puede encontrarse en su datasheet en <a href="BME280.pdf">BME280.pdf</a></p>
+</blockquote>
+<p>Para poder comenzar con el uso de las funciones de I2C es necesario incluir la cabecera de la libreria <code>Wire</code>, al principio de nuestro programa, de la siguiente forma:</p>
+<pre><code class="C">#include &lt;Wire.h&gt;
+
+void setup() {
+  // join i2c bus (address optional for master)
+  Wire.begin(0, 2);
+
+  // start serial for output
+  Serial.begin(9600);
+}
+
+void loop() {
+  // request 6 bytes from slave device #8
+  Wire.requestFrom(8, 6);
+
+  // slave may send less than requested
+  while (Wire.available())
+  {
+    // receive a byte as character
+    char c = Wire.read();
+
+    // print the character
+    Serial.printf(&quot;Received: %02X\n&quot;, c);
+  }
+
+  delay(500);
+}
+</code></pre></div>
+        
+        
+    </div>
+
+    <footer class="col-md-12 text-center">
+        
+        <hr>
+        <p>
+        <small>2019 - CieNTi - Euroavia Sevilla<br></small>
+        
+        <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p></small>
+
+        
+        
+    </footer>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>
+    var base_url = '../..';
+    </script>
+    <script src="../../js/base.js"></script>
+    <script src="../../search/main.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contenido del taller impartido para Euroavia Sevilla de C y Arduino sobre LOLIN-WeMos D1 Mini - ESP8266">
+    <meta name="author" content="CieNTi">
+    
+    <link rel="../../img/favicon.ico">
+
+    
+    <title>MQTT Broker - Taller de C y Arduino</title>
+    
+
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/base.min.css" rel="stylesheet">
+    <link href="../../css/cinder.min.css" rel="stylesheet">
+    <link href="../../css/highlight.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.6.28/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+
+     
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+
+            <a class="navbar-brand" href="../..">Taller de C y Arduino</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../introduccion/">Introducción</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../lenguaje-c/">C</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../hardware/">Hardware</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Arduino <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../arduino/">Introducción a Arduino</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../arduino/practica-01/">Práctica 1</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../arduino/practica-02/">Práctica 2 - El bus I2C</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../arduino/practica-03/">Práctica 3</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../arduino/practica-04/">Práctica 4</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Otros recursos <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../">Otros recursos</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">MQTT Broker</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a rel="prev" >
+                            Next <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/euroavia-sevilla/curso-c-arduino/edit/master/workshop/otros-recursos/mqtt-broker.md"><i class="fab fa-github"></i> Edit on GitHub</a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="first-level active"><a href="#mqtt-broker">MQTT Broker</a></li>
+            <li class="second-level"><a href="#install-both-broker-and-clients">Install both broker and clients</a></li>
+                
+            <li class="second-level"><a href="#configure-protocols">Configure protocols</a></li>
+                
+            <li class="second-level"><a href="#configure-storage-and-persistence">Configure storage and persistence</a></li>
+                
+            <li class="second-level"><a href="#configure-password-file-and-users">Configure password file and users</a></li>
+                
+            <li class="second-level"><a href="#configure-access-control-list-acl">Configure access control list (ACL)</a></li>
+                
+            <li class="second-level"><a href="#configure-clients-access">Configure clients access</a></li>
+                
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="mqtt-broker">MQTT Broker</h1>
+<p>A MQTT Broker is configured for Euroavia C/Arduino workshop. The provided ESP8266-based boards will be able to publish generic and sensor data to this server.</p>
+<ul>
+<li>Address: <code>iot.tesla.studio</code></li>
+<li>MQTT port: <code>1883</code></li>
+<li>WebSocket port: <code>1884</code></li>
+<li>MQTT URI: <a href="mqtt://iot.tesla.studio:1883">mqtt://iot.tesla.studio:1883</a></li>
+<li>WebSockeet URI: <a href="ws://iot.tesla.studio:1884">ws://iot.tesla.studio:1884</a></li>
+</ul>
+<p>Available topics and privacy for this devices:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Topic path</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>euroavia-pool/#</code></td>
+<td align="left">Subscribe access to any device (public pool)</td>
+</tr>
+<tr>
+<td align="left"><code>euroavia-pool/USERNAME/#</code></td>
+<td align="left">Subscribe/Publish access to a specific path (public pool)</td>
+</tr>
+<tr>
+<td align="left"><code>euroavia-devices/USERNAME/#</code></td>
+<td align="left">Subscribe/Publish access (private zone)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="install-both-broker-and-clients">Install both broker and clients</h2>
+<pre><code class="shell">root@iot:~# apt-get install mosquitto mosquitto-clients
+root@iot:~# service mosquitto status
+</code></pre>
+
+<p>If OK will look like this:</p>
+<pre><code class="shell">● mosquitto.service - LSB: mosquitto MQTT v3.1 message broker
+   Loaded: loaded (/etc/init.d/mosquitto; generated; vendor preset: enabled)
+   Active: active (running) since Fri 2019-03-29 00:52:35 CET; 7s ago
+     Docs: man:systemd-sysv-generator(8)
+   CGroup: /system.slice/mosquitto.service
+           └─4806 /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+
+Mar 29 00:52:35 iot systemd[1]: Starting LSB: mosquitto MQTT v3.1 message broker...
+Mar 29 00:52:35 iot mosquitto[4801]: Starting network daemon:: mosquitto.
+Mar 29 00:52:35 iot systemd[1]: Started LSB: mosquitto MQTT v3.1 message broker.
+</code></pre>
+
+<h2 id="configure-protocols">Configure protocols</h2>
+<p>Enable both MQTT and WebSockets protocols</p>
+<pre><code class="bash">root@iot:~# cat /etc/mosquitto/conf.d/protocols.conf
+listener 1883
+protocol mqtt
+
+listener 1884
+protocol websockets
+</code></pre>
+
+<p>Restart the server and check status</p>
+<pre><code class="bash">root@iot:~# service mosquitto restart
+root@iot:~# service mosquitto status
+</code></pre>
+
+<h2 id="configure-storage-and-persistence">Configure storage and persistence</h2>
+<p>This allows the broker to keep the data even between restarts</p>
+<pre><code class="bash">root@iot:~# cat /etc/mosquitto/conf.d/storage.conf
+persistence true
+persistence_location /var/lib/mosquitto/
+persistence_file mosquitto.db
+</code></pre>
+
+<p>Restart the server and check status</p>
+<pre><code class="bash">root@iot:~# service mosquitto restart
+root@iot:~# service mosquitto status
+</code></pre>
+
+<h2 id="configure-password-file-and-users">Configure password file and users</h2>
+<p>Add first (-c), then in batch (-b). Use (-D) for user deletion</p>
+<pre><code class="bash">root@iot:~# mosquitto_passwd -c /etc/mosquitto/passwd web_client
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0001 PASSHERE
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0002 PASSHERE
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0003 PASSHERE
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0004 PASSHERE
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0005 PASSHERE
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0006 PASSHERE
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0007 PASSHERE
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0008 PASSHERE
+root@iot:~# mosquitto_passwd -b /etc/mosquitto/passwd tc_d1_0000 PASSHERE
+</code></pre>
+
+<h2 id="configure-access-control-list-acl">Configure access control list (ACL)</h2>
+<p>Create rules for clients with and without username</p>
+<pre><code class="bash">root@iot:~# cat /etc/mosquitto/aclfile
+#
+# Clients without username
+#
+# This affects access control for clients with no username.
+topic read $SYS/#
+
+#
+# Clients with username
+#
+## Main users: admin and web_client
+user admin
+topic readwrite #
+
+user web_client
+topic read #
+
+## Other users: TC-Euroavia
+pattern readwrite euroavia-pool/%u/#
+pattern read euroavia-pool/#
+pattern readwrite euroavia-devices/%u/#
+</code></pre>
+
+<h2 id="configure-clients-access">Configure clients access</h2>
+<p>Enable both password and ACL</p>
+<pre><code class="bash">root@iot:~# cat /etc/mosquitto/conf.d/access.conf
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+acl_file /etc/mosquitto/aclfile
+</code></pre>
+
+<p>Restart the server and check status</p>
+<pre><code class="bash">root@iot:~# service mosquitto restart
+root@iot:~# service mosquitto status
+</code></pre></div>
+        
+        
+    </div>
+
+    <footer class="col-md-12 text-center">
+        
+        <hr>
+        <p>
+        <small>2019 - CieNTi - Euroavia Sevilla<br></small>
+        
+        <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p></small>
+
+        
+        
+    </footer>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>
+    var base_url = '../..';
+    </script>
+    <script src="../../js/base.js"></script>
+    <script src="../../search/main.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>
