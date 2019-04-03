@@ -76,8 +76,23 @@
                 
                 
                 
-                    <li >
-                        <a href="../../introduccion/">Introducción</a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Introducción <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../introduccion/">Introducción</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../introduccion/carpeta-de-trabajo/">Carpeta de trabajo</a>
+</li>
+
+                        
+                        </ul>
                     </li>
                 
                 
@@ -185,20 +200,23 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="first-level active"><a href="#practica-2-el-bus-i2c">Práctica 2 - El bus I2C</a></li>
-        <li class="first-level "><a href="#introduccion">Introducción</a></li>
+            <li class="second-level"><a href="#introduccion">Introducción</a></li>
+                
+            <li class="second-level"><a href="#como-continuar">Como continuar</a></li>
+                
             <li class="second-level"><a href="#practica">Práctica</a></li>
                 
-            <li class="second-level"><a href="#programa">Programa</a></li>
-                
+                <li class="third-level"><a href="#primera-comunicacion-i2c">Primera comunicación I2C</a></li>
+                <li class="third-level"><a href="#leer-un-byte">Leer un byte</a></li>
+                <li class="third-level"><a href="#leer-de-una-direccion-concreta">Leer de una dirección concreta</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
 
 <h1 id="practica-2-el-bus-i2c">Práctica 2 - El bus I2C</h1>
-<h1 id="introduccion">Introducción</h1>
+<h2 id="introduccion">Introducción</h2>
 <p>Antes de comenzar, se debe entender el concepto de bus:</p>
 <blockquote>
-<p>De <a href="https://es.wikipedia.org/wiki/Bus_(inform%C3%A1tica)">Wikipedia</a>:</p>
 <p>En arquitectura de computadores, el <strong>bus</strong> (o canal) es un sistema digital que transfiere datos entre los componentes de una computadora. Está formado por cables o pistas en un circuito impreso, dispositivos como resistores y condensadores, además de circuitos integrados.</p>
 <p>Existen dos tipos de transferencia en los buses:</p>
 <ul>
@@ -211,37 +229,42 @@
 <li>La longitud de los cables que forman el bus está limitada por las posibles interferencias, el ruido y los retardo en la señal.</li>
 </ul>
 <p>Además, los modernos buses serie están formados por varios canales: En este caso se transmite por varios buses serie simultáneamente. </p>
+<p><small><a href="https://es.wikipedia.org/wiki/Bus_(inform%C3%A1tica)">Wikipedia</a></small></p>
 </blockquote>
-<p>El <strong>bus I2C</strong> surge como una solución de comunicación entre chips, denominandose <em>Inter Integrated Circuits</em> bus o IIC, acabando posteriormente como I2C.</p>
-<p>Es una norma que especifica la velocidad, niveles de tensión, y el protocolo a seguir para conseguir esa comunicación.</p>
-<p>Se basa en una comunicación de tipo Maestro-Esclavo, donde varios chips se conectan en paralelo compartiendo las lineas de alimentación y dos específicas, SCL (Linea de reloj) y SDA (Linea de datos), como se ve en la siguiente figura:</p>
+<p>El <strong>bus I2C</strong> surge como una solución de comunicación entre los chips de un circuito y es una norma que especifica la velocidad, niveles de tensión, y el protocolo a seguir para conseguir dicha comunicación.</p>
+<p>Se basa en una comunicación de tipo Maestro-Esclavo, donde varios chips se conectan entre si en paralelo, compartiendo las lineas de alimentación, Vcc y GND, y dos específicas, SCL (linea de reloj) y SDA (linea de datos).</p>
+<p>Esto mismo se representa en la siguiente figura:</p>
 <p><img alt="Diagrama de conexión I2C" src="I2C-diagram.jpg" /></p>
 <p>El maestro, cuando quiera iniciar una comunicación, establecerá una frecuencia en la línea de SCL, que normalmente será 100 kHz o 400 kHz, e iniciará la comunicación como corresponda a traves de la linea SDA.</p>
 <p>Dicha comunicación se hará localizada a un chip concreto, mediante su dirección de esclavo de 7 bits. Esto hace que el bus admita hasta 128 dispositivos.</p>
-<p>Para no alargar la introducción entrando en detalles técnicos de nivel mas bajo, en caso de querer saberlos se deja como referencia el documento oficial de NXP (antes Philips).</p>
+<p>Para no alargar la introducción entrando en detalles técnicos de nivel mas bajo, se facilita el documento oficial de NXP (antes Phillips) de especificaciones y uso del bus I2C. No será necesaria su lectura para la práctica, pero no está de mas tener a mano la documentación de cada parte para casos de duda, aprendizaje o pura curiosidad.</p>
 <blockquote>
 <p>Descargar <a href="UM10204.pdf"><i class="fa fa-cloud-download-alt" style="color:#FA023C"></i> I2C-bus specification and user manual (UM10204)</a></p>
 </blockquote>
-<h2 id="practica">Práctica</h2>
-<p>En esta práctica se busca conseguir una comunicación a traves del bus I2C con los dispositivos I2C acoplados al D1 Mini:</p>
-<ul>
-<li><a href="../../hardware/#sensor-bme280-temperatura-humedad-y-presion">BME280</a>: Sensor de temperatura, humedad y presión</li>
-<li><a href="../../hardware/#sensor-mpu6050-giroscopo-de-3-ejes-y-acelerometro-de-3-ejes">MPU6050</a>: Giroscopo de 3 ejes y acelerometro de 3 ejes</li>
-</ul>
-<p>El montaje proporcionado equivale al siguiente esquemático:</p>
-<p><img alt="D1-and-sensors.png" src="../../hardware/D1-and-sensors.png" /></p>
-<p>La librería I2C, en Arduino se llama Wire, y gestiona el protocolo de comunicaciones completo, lo que es un detalle, pues nos ahorra la parte de estudiar el protocolo y escribir programas para ello (maquina de estados a bajo nivel).</p>
-<ul>
-<li>Esto es una practica habitual y recomendada, construir sobre el trabajo de terceros. Es una de las muy grandes virtudes de la comunidad Arduino y open source.</li>
-<li>Hay una gama muy amplia de librerias que dan soporte a muchisimos dispositivos, o crean funcionalidades nuevas, &hellip;</li>
-<li>Se recomienda buscar, probar y sacar conclusiones para ver tanto la calidad como el posible uso.</li>
-</ul>
-<h2 id="programa">Programa</h2>
-<p>Se parte de la anterior sesión, donde un programa enviaba por puerto serie 3 variables, para luego verlas o dibujarlas mediante el monitor serie o el plotter, respectivamente.</p>
+<h2 id="como-continuar">Como continuar</h2>
+<p>Lo siguiente será informarse del manejo y control del bus I2C desde el punto de vista de Arduino, quien abstraerá todo el bajo nivel a modo de funciones incluidas mediante librerías.</p>
 <blockquote>
-<p><strong>Librerias ESP8266 para Arduíno</strong>: Se debe consultar para saber como manejar los periféricos del micro. Disponible en <a href="https://arduino-esp8266.readthedocs.io/en/latest/libraries.html">https://arduino-esp8266.readthedocs.io/en/latest/libraries.html</a></p>
-<p><strong>Libreria <code>Wire</code> de Arduino</strong>: Una vez vistos los pormenores de la parte especifica para ESP8266, se debe consultar esta para conocer el manejo genérico en todos los Arduino. Disponible en <a href="https://www.arduino.cc/en/reference/wire">https://www.arduino.cc/en/reference/wire</a></p>
+<p>El uso de librerias y trabajo de terceros es una practica habitual y recomendada. Es una de las grandes virtudes de la comunidad Open Source y Arduino.</p>
+<p>Hay una gama muy amplia de librerias que sirven para dar soporte a dispositivos, para crear funcionalidades nuevas, &hellip;</p>
+<p>Se recomienda buscar, probar y sacar conclusiones para ver tanto la calidad como el posible uso.</p>
 </blockquote>
+<p>Dichas librerias pueden ser parte del conjunto estándar, incluido de serie al instalar Arduino, o pueden ser de terceros, como sucede con la librería que da soporte Arduino al chip <em>ESP8266</em> (de otro modo, no sería posible trabajar con el entorno de Arduino y la placa proporcionada).</p>
+<p>Para poder usarlas es necesario leer su documentacion de antemano, que se compone de:</p>
+<ol>
+<li><strong>Librerias ESP8266 para Arduíno</strong>: Se debe consultar para saber como manejar los periféricos del micro.  <br />
+<a href="https://arduino-esp8266.readthedocs.io/en/latest/libraries.html">https://arduino-esp8266.readthedocs.io/en/latest/libraries.html</a></li>
+<li><strong>Librerias de Arduino</strong>: Una vez vistos los pormenores de la parte especifica para ESP8266, se debe consultar esta para conocer el manejo genérico en todos los Arduino.  <br />
+<a href="https://www.arduino.cc/en/Reference/Libraries">https://www.arduino.cc/en/Reference/Libraries</a></li>
+</ol>
+<p>Como se indica, se recomienda primero ver la parte específica y luego la general, ya que tendrá preferencia en el momento de su uso. Esto pasa con la funcion <code>Wire.begin()</code>:</p>
+<p><code>Wire.begin()</code> existe en ambas librerias y se llaman de forma diferente, lo que puede dar lugar a fallos y confusión aunque el programa sea totalmente correcto.</p>
+<p>Lo correcto será usar <code>Wire.begin()</code> como dicta la libreria del ESP8266: <a href="https://arduino-esp8266.readthedocs.io/en/latest/libraries.html#i2c-wire-library">Wire.begin(SDA_pin, SCL_pin)</a>. Esto arrancará el periférico I2C en modo maestro usando concrétamente esos pines.</p>
+<p>Como en la libreria del ESP8266 no aparece ninguna otra referencia al bus I2C, el resto de funciones se usarán como dicta la libreria <code>Wire</code> de Arduino.</p>
+<h2 id="practica">Práctica</h2>
+<p>En esta práctica se busca conseguir una comunicación a traves del bus I2C con el dispositivo <a href="../../hardware/#sensor-bme280-temperatura-humedad-y-presion"><i class="fa fa-link" style="color:#FA023C"></i> BME280</a> acoplado al D1 Mini.</p>
+<p>Para referencia, el montaje proporcionado equivale al siguiente esquemático:</p>
+<p><img alt="D1-and-sensors.png" src="../../hardware/D1-and-sensors.png" /></p>
+<h3 id="primera-comunicacion-i2c">Primera comunicación I2C</h3>
 <p>Para poder comenzar con el uso de las funciones de I2C es necesario incluir la cabecera de la libreria <code>Wire</code>, al principio de nuestro programa, de la siguiente forma:</p>
 <pre><code class="C">/* Include required headers and/or libraries */
 #include &lt;Wire.h&gt;
@@ -254,7 +277,7 @@ void setup()
   /* Join i2c bus (address optional for master) */
   Wire.begin(0, 2);
 
-  /* start serial for output */
+  /* Start serial for output */
   Serial.begin(115200);
 }
 </code></pre>
@@ -263,7 +286,7 @@ void setup()
 <pre><code class="C">/* Recurrent task, called forever */
 void loop()
 {
-  /* Welcome message! Useful to know where  */
+  /* Welcome message! Useful as a control point */
   Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
 
   /* Request data from slave with address 0x12 */
@@ -273,17 +296,20 @@ void loop()
   uint8_t c = Wire.read();
 
   /* Send it to console/monitor */
-  Serial.printf(&quot;Received byte: %02X\n&quot;, c);
+  Serial.printf(&quot;Received byte: 0x%02X\n&quot;, c);
 
   /* Ensure not to flood with a huge amount of fast data */
   delay(500);
 }
 </code></pre>
 
-<p>Al lanzar el programa no será posible una comunicación, al no existir un esclavo con la dirección <code>0x12</code>, lo que llevará al siguiente paso: Estudiar los dispositivos</p>
-<p>En el caso del BME280, tras leer su datasheet, vemos como la dirección asociada será <code>0x76</code> o <code>0x77</code>, segun si uno de sus pines está puesto a GND o a Vcc. En el caso de la placa de prácticas, este pin está en GND por lo que la dirección final queda como <code>0x76</code>.</p>
-<p>Otro punto a tener en cuenta es que no se está controlando la disponibilidad de datos, y se pide su lectura como si esto fuera un hecho, pero lo cierto es que es posible que el dispositivo aun no responda, por lo que el dato se acabaría perdiendo. Para esto existe <code>Wire.available()</code>.</p>
-<p>Incluyendo ambos datos, nuestro nuevo programa quedaría como:</p>
+<p>Al lanzar el programa no se llevará a cabo una comunicación válida por no existir un esclavo con la dirección <code>0x12</code>, lo que deja la duda de .. <em>entonces cual es la correcta?</em>.</p>
+<p>Para responderla es necesario <strong>estudiar los dispositivos</strong>, documentandose sobre su funcionamiento y sus modos de trabajo, de forma que posteriormente se pueda programar la tarea siguiendo el flujo de trabajo establecido por el fabricante.</p>
+<h3 id="leer-un-byte">Leer un byte</h3>
+<p>En el caso del BME280, tras leer <a href="../../hardware/BME280_datasheet_en.pdf"><i class="fa fa-link" style="color:#FA023C"></i> su datasheet</a>, vemos como la dirección asociada será <code>0x76</code> o <code>0x77</code>, según si uno de sus pines está puesto a GND o a Vcc. En el caso de la placa de prácticas, este pin está en GND por lo que la dirección final queda como <code>0x76</code>.</p>
+<p>Otro punto a tener en cuenta es que no se está controlando la disponibilidad de datos, y se pide su lectura como si esto fuera un hecho, pero lo cierto es que es posible que el dispositivo pueda tardar en responder.</p>
+<p>Si se intenta leer cuando no hay dato, y cuando hay dato no se lee, se puede llegar al caso en el que los datos no estén sincronizados, o que incluso se pierdan. Para solventar esto, y leer solo si hay datos, existe la función <a href="https://www.arduino.cc/en/Reference/WireAvailable">Wire.available()</a>.</p>
+<p>Incluyendo ambos cambios, nuestro nuevo programa quedaría como:</p>
 <pre><code class="C">/* Include required headers and/or libraries */
 #include &lt;Wire.h&gt;
 
@@ -300,7 +326,7 @@ void setup()
 /* Recurrent task, called forever */
 void loop()
 {
-  /* Welcome message! Useful to know where  */
+  /* Welcome message! Useful as a control point */
   Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
 
   /* Request data from slave with address 0x76 */
@@ -313,7 +339,7 @@ void loop()
     uint8_t c = Wire.read();
 
     /* Send it to console/monitor */
-    Serial.printf(&quot;Received byte: %02X\n&quot;, c);
+    Serial.printf(&quot;Received byte: 0x%02X\n&quot;, c);
   }
 
   /* Ensure not to flood with a huge amount of fast data */
@@ -321,13 +347,103 @@ void loop()
 }
 </code></pre>
 
-<p>Si nos fijamos bien, no estamos controlando qué dato pedimos, simplemente &ldquo;leemos un byte&rdquo;. Para poder pedir un dato concreto y controlado, es necesario direccionarlo primero.</p>
-<p>Es tarea del alumno continuar a partir de aqui, confirmando primero una comunicación adecuada, y obteniendo posteriormente los datos de temperatura, humedad y presión (necesitando por tanto recibir mas de un byte en una tanda).</p>
-<p>Estos datos se presentarán por pantalla tras su lectura, como ha quedado reflejado en el ejemplo.</p>
+<p><small><em>Ver sketch <a href="https://github.com/euroavia-sevilla/curso-c-arduino/tree/master/arduino/sketch/BME280_available-byte/BME280_available-byte.ino"><i class="fab fa-github" style="color:#FA023C"></i> BME280_available-byte.ino</a> en GitHub</em></small></p>
+<p>El programa debería imprimir por puerto serie algo parecido a:</p>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+Received byte: 0x03
+Ahoy! ESP8266 here!
+---
+Received byte: 0x1E
+Ahoy! ESP8266 here!
+---
+Received byte: 0x27
+Ahoy! ESP8266 here!
+---
+Received byte: 0x41
+</code></pre>
+
+<p>Pasado un tiempo los bytes mostrados deben comenzar a repetirse, lo que indicará que estamos leyendo los datos del BME280 adecuadamente. Esto pasa porque su puntero interno se incrementa automáticamente con cada lectura, y se reinicia llegado a un tope.</p>
+<h3 id="leer-de-una-direccion-concreta">Leer de una dirección concreta</h3>
+<p>Si nos fijamos bien, en el ejemplo anterior no estamos controlando qué dato pedimos, simplemente &ldquo;leemos un byte&rdquo;.</p>
+<p>Para poder pedir un dato de una dirección concreta es necesario direccionarlo primero. De nuevo <a href="../../hardware/BME280_datasheet_en.pdf"><i class="fa fa-link" style="color:#FA023C"></i> su datasheet</a> detalla cómo leer y escribir un dato, de donde se extrae la siguiente figura, que representa la forma general de leer varios bytes de direcciones consecutivas.</p>
+<p><img alt="BME280_read-addressing.png" src="BME280_read-addressing.png" /></p>
+<p>Interpretándola, será necesario:</p>
+<ol>
+<li>Hacer una escritura, en la que el dato enviado será la dirección de la que queremos leer</li>
+<li>El BME280 internamente reposicionará su puntero de memoria.</li>
+<li>Entonces se procede a la lectura</li>
+<li>Ahora es cuando el BME280 devolverá los datos almacenados a partir de la dirección pedida</li>
+</ol>
+<p>Si en lugar de varios queremos un único byte, simplemente tendremos que pedir un único byte <i class="far fa-smile"></i>.</p>
 <blockquote>
-<p><strong>NOTA</strong>: Para confirmar la comunicación se suele leer primero un byte conocido, que para el caso del BME280 es el identificador del chip, o <strong>Chip ID</strong>. <a href="../../hardware/#sensor-bme280-temperatura-humedad-y-presion">Ver la sección dedicada al BME280</a> para mas información.</p>
+<p>Para confirmar la comunicación se suele leer primero un byte conocido, que para el caso del BME280 es el identificador del chip, o <strong>Chip ID</strong>, localizado en la dirección <code>0xD0</code>.</p>
+<p><small><a href="../../hardware/#sensor-bme280-temperatura-humedad-y-presion">Ver la sección dedicada al BME280</a> para mas información</small></p>
 </blockquote>
-<p>El siguiente paso, será comunicarnos con el MPU-6050 de la misma forma.</p></div>
+<p>Si todo esto se traduce a código, lo visto quedaría como:</p>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;Wire.h&gt;
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Join i2c bus (address optional for master) */
+  Wire.begin(0, 2);
+
+  /* start serial for output */
+  Serial.begin(115200);
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
+
+  /* Tell the BME280 where we want to read */
+  Wire.beginTransmission(0x76);
+  Wire.write(0xD0);
+  Wire.endTransmission();
+
+  /* Request data from slave with address 0x76 */
+  Wire.requestFrom(0x76, 1);
+
+  /* Wait for data to be available */
+  while (Wire.available())
+  {
+    /* Receive the byte */
+    uint8_t c = Wire.read();
+
+    /* Send it to console/monitor */
+    Serial.printf(&quot;Received byte: 0x%02X\n&quot;, c);
+  }
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+</code></pre>
+
+<p><small><em>Ver sketch <a href="https://github.com/euroavia-sevilla/curso-c-arduino/tree/master/arduino/sketch/BME280_available-byte/BME280_byte-addressing.ino"><i class="fab fa-github" style="color:#FA023C"></i> BME280_byte-addressing.ino</a> en GitHub</em></small></p>
+<p>El programa debería imprimir por puerto serie exáctamente lo siguiente:</p>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+Received byte: 0x60
+Ahoy! ESP8266 here!
+---
+Received byte: 0x60
+Ahoy! ESP8266 here!
+---
+Received byte: 0x60
+Ahoy! ESP8266 here!
+---
+Received byte: 0x60
+</code></pre>
+
+<p>Que indicará que se ha leído correctamente el identificador de chip, localizado en la dirección <code>0xD0</code>, con el valor esperado de <code>0x60</code>.</p></div>
         
         
     </div>
