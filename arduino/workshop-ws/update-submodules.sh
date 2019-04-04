@@ -6,4 +6,4 @@ APP_SCRIPT_NAME="$(basename "$(readlink -f "$0")")"
 echo "APP_PATH .........: ${APP_PATH}"
 echo "APP_SCRIPT_NAME ..: ${APP_SCRIPT_NAME}"
 
-git submodule foreach --recursive 'git pull'
+git submodule foreach --recursive 'git checkout master && git reset -- hard && git pull origin master'
