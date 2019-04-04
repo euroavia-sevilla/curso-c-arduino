@@ -200,12 +200,103 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="first-level active"><a href="#practica-3-uso-de-librerias">Práctica 3 - Uso de librerías</a></li>
+            <li class="second-level"><a href="#introduccion">Introducción</a></li>
+                
+            <li class="second-level"><a href="#como-continuar">Como continuar</a></li>
+                
+            <li class="second-level"><a href="#practica">Práctica</a></li>
+                
+                <li class="third-level"><a href="#configuracion-y-primera-lectura">Configuración y primera lectura</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
 
 <h1 id="practica-3-uso-de-librerias">Práctica 3 - Uso de librerías</h1>
-<p>TBD</p></div>
+<p>Tras aprender lo que es el bus I2C y como acceder a los datos en bruto de un dispositivo, en esta práctica se usará una libreria para que haga ese mismo trabajo.</p>
+<p>Esto supone una primera ventaja clara: en lugar de necesitar saber los pormenores de un chip, ahora solo será necesario saber cómo se usan las funciones de una librería.</p>
+<h2 id="introduccion">Introducción</h2>
+<p>Una libreria es uno o varios ficheros de código en donde ya hay programadas ciertas funcionalidades y se incluyen en el código en forma de paquete, lo que:</p>
+<ul>
+<li>Simplificará enormemente el proceso de desarrollo</li>
+<li>Incrementará la calidad y legibilidad del código final</li>
+<li>Necesitará de mucho menos tiempo para obtener los mismos resultados</li>
+<li>Evitará errores innecesarios, pues normalmente han pasado muchas pruebas</li>
+<li>Si una libreria falla suele haber alternativas</li>
+</ul>
+<p>Aunque no se haya estudiado en profundidad, esto ya se ha utilizado en los programas del taller en el momento que se usa, por ejemplo, <code>#include &lt;Wire.h&gt;</code>.</p>
+<p>Lo que realmente se está haciendo es incluir la cabecera de la librería <code>Wire</code>, que dará a conocer al programa una serie de variables, funciones, clases, etc. De esta forma pasan a estar disponibles, y por lo tanto, su funcionalidad.</p>
+<p>Dicho de otro modo, la librería <code>Wire</code> evita tener que leer uno o varios datasheets de un microcontrolador para saber cómo hacer funcionar el bus I2C en su forma mas basica.</p>
+<blockquote>
+<p>Sin la libreria <code>Wire</code> sería necesario programar funciones como <code>Wire.requestFrom()</code> o <code>Wire.read()</code>, lo que haría prácticamente inviable desarrollos a corto plazo.</p>
+</blockquote>
+<p>La siguiente figura muestra el modelo de capas de abstracción que se está usando:</p>
+<p><img alt="abstraction-layers.png" src="abstraction-layers.png" /></p>
+<p>Para el caso del sensor BME280, supondría una gran ventaja disponer de una librería que ya hiciera todo el trabajo de pedir los datos y convertirlos, con tan solo definir los parámetros básicos del bus I2C y dirección de esclavo &hellip; y es lo que se verá a continuación.</p>
+<h2 id="como-continuar">Como continuar</h2>
+<p>Lo primero es buscar y estudiar las posibilidades, y para esto Arduino facilita la tarea mediante un gestor de librerias, al que se accede a través de <em>Herramientas &gt; Gestor de librerias &hellip;</em>, obteniendo algo como en la siguiente figura:</p>
+<p><img alt="arduino-library-manager.png" src="arduino-library-manager.png" /></p>
+<p>Como se continuará con el sensor BME280, se pone como filtro de búsqueda, lo que resultará en algo como:</p>
+<p><img alt="arduino-library-manager_BME280.png" src="arduino-library-manager_BME280.png" /></p>
+<blockquote>
+<p>Para la práctica se ha seleccionado la de <strong>SparkFun Electronics</strong>, por ser una de las mas completas, configurables y robustas. Esto no significa que no se pueda buscar información del resto, probarlas, y sacar conclusiones propias.</p>
+</blockquote>
+<h2 id="practica">Práctica</h2>
+<p>En esta práctica se busca conseguir una lectura total del sensor BME280 mediante el uso de la librería propuesta.</p>
+<blockquote>
+<p>Para poder estudiar su uso, ver la <a href="https://github.com/sparkfun/SparkFun_BME280_Arduino_Library"><i class="fa fa-link" style="color:#FA023C"></i> documentación sobre la librería BME280 de SparkFun</a></p>
+</blockquote>
+<h3 id="configuracion-y-primera-lectura">Configuración y primera lectura</h3>
+<p>Por ahora, se proporciona únicamente la configuración, dejando como tarea continuar con el programa &hellip; tras ver lo que dicen sus diseñadores (documentación, ejemplos, &hellip;)</p>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;Wire.h&gt;
+#include &quot;SparkFunBME280.h&quot;
+
+#define SLAVE_ADDRESS 0x76
+
+/* Instantiate a BME280 object called BME280_obj */
+BME280 BME280_obj;
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Join I2C bus and set it to 400 kHz */
+  Wire.begin(0, 2);
+  Wire.setClock(400000);
+
+  /* Address the sensor */
+  BME280_obj.setI2CAddress(SLAVE_ADDRESS);
+
+  /* Check communication before continue */
+  if (BME280_obj.beginI2C(Wire) == false)
+  {
+    Serial.printf(&quot;The sensor did not respond. Please check wiring.\n&quot;);
+
+    /* Stop here (WDT will reset at some point) */
+    while(1);
+  }
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
+
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   *  Ask for the data and print to console here !!
+   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+</code></pre></div>
         
         
     </div>
