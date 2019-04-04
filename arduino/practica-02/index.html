@@ -133,7 +133,7 @@
                         
                             
 <li >
-    <a href="../practica-03/">Práctica 3</a>
+    <a href="../practica-03/">Práctica 3 - Uso de librerías</a>
 </li>
 
                         
@@ -209,6 +209,7 @@
                 <li class="third-level"><a href="#primera-comunicacion-i2c">Primera comunicación I2C</a></li>
                 <li class="third-level"><a href="#leer-un-byte">Leer un byte</a></li>
                 <li class="third-level"><a href="#leer-de-una-direccion-concreta">Leer de una dirección concreta</a></li>
+                <li class="third-level"><a href="#leer-un-bloque-de-memoria">Leer un bloque de memoria</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
@@ -427,7 +428,7 @@ void loop()
 }
 </code></pre>
 
-<p><small><em>Ver sketch <a href="https://github.com/euroavia-sevilla/curso-c-arduino/tree/master/arduino/sketch/BME280_available-byte/BME280_byte-addressing.ino"><i class="fab fa-github" style="color:#FA023C"></i> BME280_byte-addressing.ino</a> en GitHub</em></small></p>
+<p><small><em>Ver sketch <a href="https://github.com/euroavia-sevilla/curso-c-arduino/tree/master/arduino/sketch/BME280_byte-addressing/BME280_byte-addressing.ino"><i class="fab fa-github" style="color:#FA023C"></i> BME280_byte-addressing.ino</a> en GitHub</em></small></p>
 <p>El programa debería imprimir por puerto serie exáctamente lo siguiente:</p>
 <pre><code class="text">Ahoy! ESP8266 here!
 ---
@@ -443,7 +444,160 @@ Ahoy! ESP8266 here!
 Received byte: 0x60
 </code></pre>
 
-<p>Que indicará que se ha leído correctamente el identificador de chip, localizado en la dirección <code>0xD0</code>, con el valor esperado de <code>0x60</code>.</p></div>
+<p>Que indicará que se ha leído correctamente el identificador de chip, localizado en la dirección <code>0xD0</code>, con el valor esperado de <code>0x60</code>.</p>
+<h3 id="leer-un-bloque-de-memoria">Leer un bloque de memoria</h3>
+<p>Siguiendo la misma linea del ejemplo anterior, lo lógico sería pensar en hacer varios <code>Wire.read()</code> y salvar el resultado, algo como:</p>
+<pre><code class="C">(...)
+  /* Request data from slave with address 0x76 */
+  Wire.requestFrom(0x76, 3);
+
+  /* Wait for data to be available */
+  while (Wire.available())
+  {
+    /* Receive the byte */
+    uint8_t c0 = Wire.read();
+    uint8_t c1 = Wire.read();
+    uint8_t c2 = Wire.read();
+
+    /* Send it to console/monitor */
+    Serial.printf(&quot;Received bytes: 0x%02X, 0x%02X and 0x%02X\n&quot;, c0, c1, c2);
+  }
+(...)
+</code></pre>
+
+<p>Pero resulta un método tedioso y muy poco eficiente, en el que un bloque simple de 128 bytes sería un programa enorme para una tarea muy sencilla.</p>
+<p>En este momento entran en juego los <code>arrays</code>, que son matrices compuestas por un numero finito de elementos de algún tipo definido. Para este caso se deberá usar un array de elementos de tipo <code>uint8_t</code>.</p>
+<p>Junto al array, se utilizará una variable secundaria que servirá de índice para almacenar la posición dentro del array donde se salvará el siguiente dato. Esta variable comenzará siendo 0 y se incrementará cada vez que se reciba un dato.</p>
+<p>Ahora queda saber desde qué dirección comenzar a leer, y para esto el datasheet proporciona el mapa de registros en memoria y sus direcciones, como se ve en la siguiente figura:</p>
+<p><img alt="BME280_memory-map.png" src="BME280_memory-map.png" /></p>
+<p>Como se puede observar, el primer dato se encuentra en la dirección <code>0x88</code> y el último en la <code>0xFE</code>, sumando un total de 118 bytes.</p>
+<blockquote>
+<p>Arduino tiene un limite interno para <code>Wire.requestFrom()</code> de <strong>128 bytes</strong>, y como se necesitan sólo 118 no debería haber problema, pero hay que tenerlo en cuenta en caso de necesitarse transferencias de mayor tamaño, ya que habría que fraccionarlas.</p>
+</blockquote>
+<p>Llevado a código, el nuevo programa podría quedar como sigue:</p>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;Wire.h&gt;
+
+#define SLAVE_ADDRESS 0x76
+#define BLOCK_ADDRESS 0x88
+#define BLOCK_LENGTH 118
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Join i2c bus (address optional for master) */
+  Wire.begin(0, 2);
+
+  /* start serial for output */
+  Serial.begin(115200);
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
+
+  /* Tell the BME280 where we want to read */
+  Wire.beginTransmission(SLAVE_ADDRESS);
+  Wire.write(BLOCK_ADDRESS);
+  Wire.endTransmission();
+
+  /* Use static to prevent block re-allocation on each pass */
+  static uint8_t memory_map[BLOCK_LENGTH] = { 0x00 };
+
+  /* Array index, stores position to write a received byte */
+  uint8_t memory_idx = 0;
+
+  /* Used to check the received amount */
+  uint8_t rx_bytes = 0;
+
+  /* Request data from slave */
+  Wire.requestFrom(SLAVE_ADDRESS, BLOCK_LENGTH);
+
+  /* Wait for data to be available */
+  while (rx_bytes == 0)
+  {
+    rx_bytes = Wire.available();
+  }
+
+  /* Save the block */
+  for (memory_idx = 0; memory_idx &lt; rx_bytes; memory_idx++)
+  {
+    memory_map[memory_idx] = Wire.read();
+  }
+
+  /* Print the block */
+  Serial.printf(&quot; ++ | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n&quot;);
+  Serial.printf(&quot;----+------------------------------------------------&quot;);
+  for (memory_idx = 0; memory_idx &lt; rx_bytes; memory_idx++)
+  {
+    /* Create a new line each 16 printed bytes */
+    if ((memory_idx % 16) == 0)
+    {
+      Serial.printf(&quot;\n %02X |&quot;, memory_idx + BLOCK_ADDRESS);
+    }
+
+    /* Print a byte */
+    Serial.printf(&quot; %02X&quot;, memory_map[memory_idx]);
+  }
+  Serial.printf(&quot;\nEnd of data\n&quot;);
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+</code></pre>
+
+<p><small><em>Ver sketch <a href="https://github.com/euroavia-sevilla/curso-c-arduino/tree/master/arduino/sketch/BME280_block-read/BME280_block-read.ino"><i class="fab fa-github" style="color:#FA023C"></i> BME280_block-read.ino</a> en GitHub</em></small></p>
+<p>En este ejemplo se ha incluido el uso de macros de precompilacion, como por ejemplo pasa con <code>#define BLOCK_LENGTH 118</code>.</p>
+<p>Esto crea <code>BLOCK_LENGTH</code>, que parece y funciona como una variable ya que se sustituye por el numero 118, pero que se sustituye <strong>antes</strong> de compilar el programa, por lo que es como si se escribiera el numero 118 en el propio código.</p>
+<ul>
+<li><strong>Macro frente a Variable:</strong> La diferencia es que al tratarse de un valor constante, pues 118 no cambiará nunca a lo largo del programa, usar una variable para esto es un malgasto de memoria RAM.</li>
+<li><strong>Macro frente a Número:</strong> La diferencia es que el uso de un nombre descriptivo frente a un simple numero siempre será mas claro de leer y de entender. El uso de números sin descripción es una mala práctica, y debe evitarse siempre que sea posible. Se conoce tambien como &lsquo;hardcoding&rsquo; o &lsquo;magic numbers&rsquo;:    <blockquote>
+<p>In computer programming, the term <em>magic number</em> has multiple meanings. It could refer to one or more of the following:</p>
+<ul>
+<li><strong>Unique values with unexplained meaning or multiple occurrences which could (preferably) be replaced with named constants</strong></li>
+<li>A constant numerical or text value used to identify a file format or protocol; for files, see List of file signatures</li>
+<li>Distinctive unique values that are unlikely to be mistaken for other meanings (e.g., Globally Unique Identifiers)</li>
+</ul>
+<p><small><a href="https://en.wikipedia.org/wiki/Magic_number_(programming)">Wikipedia</a></small></p>
+</blockquote>
+</li>
+</ul>
+<p>El programa debería imprimir por puerto serie algo parecido a:</p>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+ ++ | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+----+------------------------------------------------
+ 88 | B7 6E DD 67 32 00 79 92 3E D6 D0 0B 5F 28 D7 FE
+ 98 | F9 FF 0C 30 20 D1 88 13 00 4B A5 00 00 00 00 00
+ A8 | 00 00 00 00 33 00 00 C0 00 54 00 00 00 00 60 02
+ B8 | 00 01 FF FF 1F 60 03 00 00 00 00 FF 00 00 00 00
+ C8 | 00 00 00 00 00 00 00 00 60 00 00 00 00 00 00 00
+ D8 | 00 00 00 00 00 00 00 00 00 56 01 00 17 20 03 1E
+ E8 | 27 41 FF FF FF FF FF FF FF 00 00 00 00 00 00 80
+ F8 | 00 00 80 00 00 80
+End of data
+Ahoy! ESP8266 here!
+---
+ ++ | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+----+------------------------------------------------
+ 88 | B7 6E DD 67 32 00 79 92 3E D6 D0 0B 5F 28 D7 FE
+ 98 | F9 FF 0C 30 20 D1 88 13 00 4B A5 00 00 00 00 00
+ A8 | 00 00 00 00 33 00 00 C0 00 54 00 00 00 00 60 02
+ B8 | 00 01 FF FF 1F 60 03 00 00 00 00 FF 00 00 00 00
+ C8 | 00 00 00 00 00 00 00 00 60 00 00 00 00 00 00 00
+ D8 | 00 00 00 00 00 00 00 00 00 56 01 00 17 20 03 1E
+ E8 | 27 41 FF FF FF FF FF FF FF 00 00 00 00 00 00 80
+ F8 | 00 00 80 00 00 80
+End of data
+</code></pre>
+
+<p>Como puede comprobarse, el <em>Chip ID</em> puede leerse como <code>60</code> en la posición con fila <code>C8</code> y columna <code>08</code> (que se corresponde a <em>0xC8 + 0x08 = 0xD0</em>, la dirección del Chip ID).</p></div>
         
         
     </div>
