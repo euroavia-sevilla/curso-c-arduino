@@ -260,7 +260,7 @@ void loop()
 }
 ```
 
-<small>*Ver sketch [<i class="fab fa-github" style="color:#FA023C"></i> BME280_byte-addressing.ino](https://github.com/euroavia-sevilla/curso-c-arduino/tree/master/arduino/sketch/BME280_available-byte/BME280_byte-addressing.ino) en GitHub*</small>
+<small>*Ver sketch [<i class="fab fa-github" style="color:#FA023C"></i> BME280_byte-addressing.ino](https://github.com/euroavia-sevilla/curso-c-arduino/tree/master/arduino/sketch/BME280_byte-addressing/BME280_byte-addressing.ino) en GitHub*</small>
 
 El programa debería imprimir por puerto serie exáctamente lo siguiente:
 
@@ -280,3 +280,169 @@ Received byte: 0x60
 ```
 
 Que indicará que se ha leído correctamente el identificador de chip, localizado en la dirección `0xD0`, con el valor esperado de `0x60`.
+
+### Leer un bloque de memoria
+
+Siguiendo la misma linea del ejemplo anterior, lo lógico sería pensar en hacer varios `Wire.read()` y salvar el resultado, algo como:
+
+```C
+(...)
+  /* Request data from slave with address 0x76 */
+  Wire.requestFrom(0x76, 3);
+
+  /* Wait for data to be available */
+  while (Wire.available())
+  {
+    /* Receive the byte */
+    uint8_t c0 = Wire.read();
+    uint8_t c1 = Wire.read();
+    uint8_t c2 = Wire.read();
+
+    /* Send it to console/monitor */
+    Serial.printf("Received bytes: 0x%02X, 0x%02X and 0x%02X\n", c0, c1, c2);
+  }
+(...)
+```
+
+Pero resulta un método tedioso y muy poco eficiente, en el que un bloque simple de 128 bytes sería un programa enorme para una tarea muy sencilla.
+
+En este momento entran en juego los `arrays`, que son matrices compuestas por un numero finito de elementos de algún tipo definido. Para este caso se deberá usar un array de elementos de tipo `uint8_t`.
+
+Junto al array, se utilizará una variable secundaria que servirá de índice para almacenar la posición dentro del array donde se salvará el siguiente dato. Esta variable comenzará siendo 0 y se incrementará cada vez que se reciba un dato.
+
+Ahora queda saber desde qué dirección comenzar a leer, y para esto el datasheet proporciona el mapa de registros en memoria y sus direcciones, como se ve en la siguiente figura:
+
+![BME280_memory-map.png](BME280_memory-map.png)
+
+Como se puede observar, el primer dato se encuentra en la dirección `0x88` y el último en la `0xFE`, sumando un total de 118 bytes.
+
+> Arduino tiene un limite interno para `Wire.requestFrom()` de **128 bytes**, y como se necesitan sólo 118 no debería haber problema, pero hay que tenerlo en cuenta en caso de necesitarse transferencias de mayor tamaño, ya que habría que fraccionarlas.
+
+Llevado a código, el nuevo programa podría quedar como sigue:
+
+```C
+/* Include required headers and/or libraries */
+#include <Wire.h>
+
+#define SLAVE_ADDRESS 0x76
+#define BLOCK_ADDRESS 0x88
+#define BLOCK_LENGTH 118
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Join i2c bus (address optional for master) */
+  Wire.begin(0, 2);
+
+  /* start serial for output */
+  Serial.begin(115200);
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Welcome message! Useful as a control point */
+  Serial.printf("Ahoy! ESP8266 here!\n---\n");
+
+  /* Tell the BME280 where we want to read */
+  Wire.beginTransmission(SLAVE_ADDRESS);
+  Wire.write(BLOCK_ADDRESS);
+  Wire.endTransmission();
+
+  /* Use static to prevent block re-allocation on each pass */
+  static uint8_t memory_map[BLOCK_LENGTH] = { 0x00 };
+
+  /* Array index, stores position to write a received byte */
+  uint8_t memory_idx = 0;
+
+  /* Used to check the received amount */
+  uint8_t rx_bytes = 0;
+
+  /* Request data from slave */
+  Wire.requestFrom(SLAVE_ADDRESS, BLOCK_LENGTH);
+
+  /* Wait for data to be available */
+  while (rx_bytes == 0)
+  {
+    rx_bytes = Wire.available();
+  }
+
+  /* Save the block */
+  for (memory_idx = 0; memory_idx < rx_bytes; memory_idx++)
+  {
+    memory_map[memory_idx] = Wire.read();
+  }
+
+  /* Print the block */
+  Serial.printf(" ++ | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n");
+  Serial.printf("----+------------------------------------------------");
+  for (memory_idx = 0; memory_idx < rx_bytes; memory_idx++)
+  {
+    /* Create a new line each 16 printed bytes */
+    if ((memory_idx % 16) == 0)
+    {
+      Serial.printf("\n %02X |", memory_idx + BLOCK_ADDRESS);
+    }
+
+    /* Print a byte */
+    Serial.printf(" %02X", memory_map[memory_idx]);
+  }
+  Serial.printf("\nEnd of data\n");
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+```
+
+<small>*Ver sketch [<i class="fab fa-github" style="color:#FA023C"></i> BME280_block-read.ino](https://github.com/euroavia-sevilla/curso-c-arduino/tree/master/arduino/sketch/BME280_block-read/BME280_block-read.ino) en GitHub*</small>
+
+En este ejemplo se ha incluido el uso de macros de precompilacion, como por ejemplo pasa con `#define BLOCK_LENGTH 118`.
+
+Esto crea `BLOCK_LENGTH`, que parece y funciona como una variable ya que se sustituye por el numero 118, pero que se sustituye **antes** de compilar el programa, por lo que es como si se escribiera el numero 118 en el propio código.
+
+* **Macro frente a Variable:** La diferencia es que al tratarse de un valor constante, pues 118 no cambiará nunca a lo largo del programa, usar una variable para esto es un malgasto de memoria RAM.
+* **Macro frente a Número:** La diferencia es que el uso de un nombre descriptivo frente a un simple numero siempre será mas claro de leer y de entender. El uso de números sin descripción es una mala práctica, y debe evitarse siempre que sea posible. Se conoce tambien como 'hardcoding' o 'magic numbers':    
+> In computer programming, the term *magic number* has multiple meanings. It could refer to one or more of the following:
+>
+> * **Unique values with unexplained meaning or multiple occurrences which could (preferably) be replaced with named constants**
+> * A constant numerical or text value used to identify a file format or protocol; for files, see List of file signatures
+> * Distinctive unique values that are unlikely to be mistaken for other meanings (e.g., Globally Unique Identifiers)
+>
+> <small>[Wikipedia](https://en.wikipedia.org/wiki/Magic_number_(programming))</small>
+
+El programa debería imprimir por puerto serie algo parecido a:
+
+```text
+Ahoy! ESP8266 here!
+---
+ ++ | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+----+------------------------------------------------
+ 88 | B7 6E DD 67 32 00 79 92 3E D6 D0 0B 5F 28 D7 FE
+ 98 | F9 FF 0C 30 20 D1 88 13 00 4B A5 00 00 00 00 00
+ A8 | 00 00 00 00 33 00 00 C0 00 54 00 00 00 00 60 02
+ B8 | 00 01 FF FF 1F 60 03 00 00 00 00 FF 00 00 00 00
+ C8 | 00 00 00 00 00 00 00 00 60 00 00 00 00 00 00 00
+ D8 | 00 00 00 00 00 00 00 00 00 56 01 00 17 20 03 1E
+ E8 | 27 41 FF FF FF FF FF FF FF 00 00 00 00 00 00 80
+ F8 | 00 00 80 00 00 80
+End of data
+Ahoy! ESP8266 here!
+---
+ ++ | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+----+------------------------------------------------
+ 88 | B7 6E DD 67 32 00 79 92 3E D6 D0 0B 5F 28 D7 FE
+ 98 | F9 FF 0C 30 20 D1 88 13 00 4B A5 00 00 00 00 00
+ A8 | 00 00 00 00 33 00 00 C0 00 54 00 00 00 00 60 02
+ B8 | 00 01 FF FF 1F 60 03 00 00 00 00 FF 00 00 00 00
+ C8 | 00 00 00 00 00 00 00 00 60 00 00 00 00 00 00 00
+ D8 | 00 00 00 00 00 00 00 00 00 56 01 00 17 20 03 1E
+ E8 | 27 41 FF FF FF FF FF FF FF 00 00 00 00 00 00 80
+ F8 | 00 00 80 00 00 80
+End of data
+```
+
+Como puede comprobarse, el *Chip ID* puede leerse como `60` en la posición con fila `C8` y columna `08` (que se corresponde a *0xC8 + 0x08 = 0xD0*, la dirección del Chip ID).
