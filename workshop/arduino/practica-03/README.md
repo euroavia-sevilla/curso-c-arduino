@@ -42,13 +42,39 @@ Como se continuará con el sensor BME280, se pone como filtro de búsqueda, lo q
 
 ## Práctica
 
-En esta práctica se busca conseguir una lectura total del sensor BME280 mediante el uso de la librería propuesta.
+Una vez visto el mecanismo de instalación y uso de librerías, se proporcionan los siguientes ejemplos para cada parte interesante del dispositivo, con vistas a utilizar todos o parte de los elementos para la última práctica, donde se construirá un nodo IoT WiFi completamente funcional.
 
-> Para poder estudiar su uso, ver la [<i class="fa fa-link" style="color:#FA023C"></i> documentación sobre la librería BME280 de SparkFun](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library)
+Se recomienda compilar, probar y salvar cada ejemplo, para asi ver las particularidades de cada uno, y tomar consciencia del trabajo que pueda necesitar unificar todo en un único programa.
 
-### Configuración y primera lectura
 
-Por ahora, se proporciona únicamente la configuración, dejando como tarea continuar con el programa ... tras ver lo que dicen sus diseñadores (documentación, ejemplos, ...)
+### Template
+
+#### Resumen
+
+| Libreria | Enlaces de interés | | | |
+| :----- | :-----: | :-----: | :-----: | :-----: |
+| `NAME` de *AUTHOR* | [<i class="fa fa-link" style="color:#FA023C"></i> Repositorio]() | [<i class="fa fa-link" style="color:#FA023C"></i> Documentación]() | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplos]() | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente]() |
+
+#### Ejemplo funcional
+
+```C
+```
+
+#### Salida esperada
+
+```text
+```
+
+
+### BME280: Temperatura, Humedad, Presión, Altitud
+
+#### Resumen
+
+| Libreria | Enlaces de interés | | | |
+| :----- | :-----: | :-----: | :-----: | :-----: |
+| `SparkFun BME280` de *SparkFun Electronics* | [<i class="fa fa-link" style="color:#FA023C"></i> Repositorio](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library) | Documentado con ejemplos | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplos](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/master/examples) | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/master/src) |
+
+#### Ejemplo funcional
 
 ```C
 /* Include required headers and/or libraries */
@@ -83,6 +109,22 @@ void setup()
     /* Stop here (WDT will reset at some point) */
     while(1);
   }
+
+  /* -- Configure the sensor --
+   *  - Read  the  datasheet -
+   */
+  /* Filter coefficient.          | 0 to 4 is valid.   | See 3.4.4     */
+  BME280_obj.setFilter(2);
+  /* Time between readings.       | 0 to 7 valid.      | See table 27. */
+  BME280_obj.setStandbyTime(1);
+  /* 0 disables temp sensing.     | 0 to 16 are valid. | See table 24. */
+  BME280_obj.setTempOverSample(8);
+  /* 0 disables pressure sensing. | 0 to 16 are valid. | See table 23. */
+  BME280_obj.setPressureOverSample(8);
+  /* 0 disables humidity sensing. | 0 to 16 are valid. | See table 19. */
+  BME280_obj.setHumidityOverSample(8);
+  /* MODE_SLEEP, MODE_FORCED, MODE_NORMAL is valid.    | See 3.3       */
+  BME280_obj.setMode(MODE_NORMAL);
 }
 
 /*
@@ -93,11 +135,206 @@ void loop()
   /* Welcome message! Useful as a control point */
   Serial.printf("Ahoy! ESP8266 here!\n---\n");
 
-  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   *  Ask for the data and print to console here !!
-   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /* Read and print sensor data */
+  Serial.printf(" - Temp.: %2.2f [C]\n",  BME280_obj.readTempC());
+  Serial.printf(" - Temp.: %2.2f [F]\n",  BME280_obj.readTempF());
+  Serial.printf(" - Hum..: %2.2f [%%]\n", BME280_obj.readFloatHumidity());
+  Serial.printf(" - Pres.: %2.2f [Pa]\n", BME280_obj.readFloatPressure());
+  Serial.printf(" - Alt..: %2.2f [m]\n",  BME280_obj.readFloatAltitudeMeters());
+  Serial.printf(" - Alt..: %2.2f [Ft]\n", BME280_obj.readFloatAltitudeFeet());
 
   /* Ensure not to flood with a huge amount of fast data */
   delay(500);
 }
+```
+
+#### Salida esperada
+
+```text
+Ahoy! ESP8266 here!
+---
+ - Temp.: 34.08 [C]
+ - Temp.: 93.34 [F]
+ - Hum..: 26.10 [%]
+ - Pres.: 101292.66 [Pa]
+ - Alt..: 2.69 [m]
+ - Alt..: 8.83 [Ft]
+Ahoy! ESP8266 here!
+---
+ - Temp.: 34.05 [C]
+ - Temp.: 93.29 [F]
+ - Hum..: 26.04 [%]
+ - Pres.: 101292.16 [Pa]
+ - Alt..: 2.73 [m]
+ - Alt..: 8.97 [Ft]
+```
+
+### MPU6050: Temperatura, Aceleración, Rotación
+
+#### Resumen
+
+| Libreria | Enlaces de interés | | | |
+| :----- | :-----: | :-----: | :-----: | :-----: |
+| `MPU6050` de *Electronic Cats* | [<i class="fa fa-link" style="color:#FA023C"></i> Repositorio](https://github.com/electroniccats/mpu6050) | Documentado con ejemplos | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplos](https://github.com/electroniccats/mpu6050/tree/master/examples) | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente](https://github.com/electroniccats/mpu6050/tree/master/src) |
+
+#### Ejemplo funcional
+
+```C
+/* Include required headers and/or libraries */
+#include <Wire.h>
+#include <I2Cdev.h>
+#include <MPU6050.h>
+
+#define MPU6050_ADDRESS 0x68
+
+/* Instantiate a MPU6050 object called MPU6050_obj */
+MPU6050 accelgyro(MPU6050_ADDRESS);
+
+/* Used to translate from digital to human */
+struct meas_range
+{
+  uint16_t ranges[4];
+  uint8_t current;
+}
+MPU6050_range[2] =
+{
+  { .ranges = { 250, 500, 1000, 2000 }, .current = 0 },
+  { .ranges = { 2, 4, 8, 16 },          .current = 0 },
+};
+#define RANGE_GYRO  0
+#define RANGE_ACCEL 1
+
+/* Get a gyro or accel raw value and convert to human-readable */
+float raw_to_human(struct meas_range *range, int16_t raw_val)
+{
+  /* Uncomment to get details about conversion */
+  //printf("Converting 0x%04X\n"
+  //       " - %s range, current %u, value %u\n"
+  //       " - Converted value %2.2f\n",
+  //       raw_val,
+  //       (range == &MPU6050_range[0])?" Gyro":"Accel",
+  //       range->current, range->ranges[range->current],
+  //       (((float)raw_val * range->ranges[range->current]) / 0x7FFF)
+  //       );
+  return (((float)raw_val * range->ranges[range->current]) / 0x7FFF);
+}
+
+/* Convert a temperature value, method differs from gyro/accel */
+float temp_to_human(int16_t raw_val)
+{
+  return (((float)raw_val / 340) + 36.53);
+}
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Join I2C bus and set it to 400 kHz */
+  Wire.begin();
+  Wire.setClock(400000);
+
+  /* Initialize the sensor */
+  accelgyro.initialize();
+
+  /* Check communication before continue */
+  if (accelgyro.testConnection() == false)
+  {
+    Serial.printf("The sensor did not respond. Please check wiring.\n");
+    
+    /* Stop here (WDT will reset at some point) */
+    while(1);
+  }
+
+  /* By default, the library uses the following settings:
+   * - setFullScaleGyroRange(MPU6050_GYRO_FS_250)
+   * - setFullScaleAccelRange(MPU6050_ACCEL_FS_2)
+   */
+
+  /* Configure Gyroscope range, choose from:
+   * - MPU6050_GYRO_FS_250 ..: +/-250 deg/sec
+   * - MPU6050_GYRO_FS_500 ..: +/-500 deg/sec
+   * - MPU6050_GYRO_FS_1000 .: +/-1000 deg/sec
+   * - MPU6050_GYRO_FS_2000 .: +/-2000 deg/sec
+   *
+   * Uncomment the following two lines to set a different value
+   */
+  //MPU6050_range[RANGE_GYRO].current = MPU6050_GYRO_FS_2000;
+  //accelgyro.setFullScaleGyroRange(MPU6050_range[RANGE_GYRO].current);
+
+  /* Configure Accelerometer range, choose from:
+   * - MPU6050_ACCEL_FS_2 ...: +/-2g
+   * - MPU6050_ACCEL_FS_4 ...: +/-4g
+   * - MPU6050_ACCEL_FS_8 ...: +/-8g
+   * - MPU6050_ACCEL_FS_16 ..: +/-16g
+   *
+   * Uncomment the following two lines to set a different value
+   */
+  //MPU6050_range[RANGE_ACCEL].current = MPU6050_ACCEL_FS_16;
+  //accelgyro.setFullScaleAccelRange(MPU6050_range[RANGE_ACCEL].current);
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Welcome message! Useful as a control point */
+  Serial.printf("Ahoy! ESP8266 here!\n---\n");
+
+  /* Read and print sensor data */
+  Serial.printf(" - Temperature ....: %2.2f [degC]\n",
+                temp_to_human(accelgyro.getTemperature()));
+  Serial.printf(" - Rotation X .....: %2.2f [deg/sec]\n",
+                raw_to_human(&MPU6050_range[RANGE_GYRO],
+                             accelgyro.getRotationX()));
+  Serial.printf(" - Rotation Y .....: %2.2f [deg/sec]\n",
+                raw_to_human(&MPU6050_range[RANGE_GYRO],
+                             accelgyro.getRotationY()));
+  Serial.printf(" - Rotation Z .....: %2.2f [deg/sec]\n",
+                raw_to_human(&MPU6050_range[RANGE_GYRO],
+                             accelgyro.getRotationZ()));
+  Serial.printf(" - Acceleration X .: %2.2f [g]\n",
+                raw_to_human(&MPU6050_range[RANGE_ACCEL],
+                             accelgyro.getAccelerationX()));
+  Serial.printf(" - Acceleration Y .: %2.2f [g]\n",
+                raw_to_human(&MPU6050_range[RANGE_ACCEL],
+                             accelgyro.getAccelerationY()));
+  Serial.printf(" - Acceleration Z .: %2.2f [g]\n",
+                raw_to_human(&MPU6050_range[RANGE_ACCEL],
+                             accelgyro.getAccelerationZ()));
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+```
+
+#### Salida esperada
+
+> **NOTA:** Sin haberse corregido los offsets, los datos obtenidos pueden no tener sentido, pero lo importante de esta prueba es que varien con coherencia cuando se mueva la placa. La temperatura tambien subira o bajara, aunque en fracciones coherentes.
+> 
+> Si los datos no varían, el sensor no se está midiendo correctamente.
+
+```text
+Ahoy! ESP8266 here!
+---
+ - Temperature ....: 32.81 [degC]
+ - Rotation X .....: 0.24 [deg/sec]
+ - Rotation Y .....: 3.66 [deg/sec]
+ - Rotation Z .....: -3.87 [deg/sec]
+ - Acceleration X .: 0.08 [g]
+ - Acceleration Y .: -0.19 [g]
+ - Acceleration Z .: 0.83 [g]
+Ahoy! ESP8266 here!
+---
+ - Temperature ....: 32.86 [degC]
+ - Rotation X .....: 0.10 [deg/sec]
+ - Rotation Y .....: 3.27 [deg/sec]
+ - Rotation Z .....: -3.88 [deg/sec]
+ - Acceleration X .: 0.08 [g]
+ - Acceleration Y .: -0.19 [g]
+ - Acceleration Z .: 0.83 [g]
 ```

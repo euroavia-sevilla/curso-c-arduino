@@ -8,8 +8,12 @@
   "build_systems":
   [
     {
-      "name": "Compile and execute current Arduino sketch",
+      "name": "Build & Run current Arduino sketch (/dev/ttyUSB0)",
       "shell_cmd": "cd $project_path/sketch && ./compile-and-flash.sh $file_base_name /dev/ttyUSB0"
+    },
+    {
+      "name": "Build & Run current Arduino sketch (/dev/ttyUSB1)",
+      "shell_cmd": "cd $project_path/sketch && ./compile-and-flash.sh $file_base_name /dev/ttyUSB1"
     },
     {
       "name": "Test sublime build system vars",
