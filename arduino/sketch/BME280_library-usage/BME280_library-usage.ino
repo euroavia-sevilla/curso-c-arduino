@@ -28,7 +28,7 @@ void setup()
     Serial.printf("The sensor did not respond. Please check wiring.\n");
     
     /* Stop here (WDT will reset at some point) */
-    while(1);
+    while(1) {};
   }
 
   /* -- Configure the sensor --
