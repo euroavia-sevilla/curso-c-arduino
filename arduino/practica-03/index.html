@@ -206,7 +206,9 @@
                 
             <li class="second-level"><a href="#practica">Práctica</a></li>
                 
-                <li class="third-level"><a href="#configuracion-y-primera-lectura">Configuración y primera lectura</a></li>
+                <li class="third-level"><a href="#bme280-temperatura-humedad-presion-altitud">BME280: Temperatura, Humedad, Presión, Altitud</a></li>
+                <li class="third-level"><a href="#mpu6050-temperatura-aceleracion-rotacion">MPU6050: Temperatura, Aceleración, Rotación</a></li>
+                <li class="third-level"><a href="#spiffs-ficheros-en-memoria-interna">SPIFFS: Ficheros en memoria interna</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
@@ -241,12 +243,31 @@
 <p>Para la práctica se ha seleccionado la de <strong>SparkFun Electronics</strong>, por ser una de las mas completas, configurables y robustas. Esto no significa que no se pueda buscar información del resto, probarlas, y sacar conclusiones propias.</p>
 </blockquote>
 <h2 id="practica">Práctica</h2>
-<p>En esta práctica se busca conseguir una lectura total del sensor BME280 mediante el uso de la librería propuesta.</p>
-<blockquote>
-<p>Para poder estudiar su uso, ver la <a href="https://github.com/sparkfun/SparkFun_BME280_Arduino_Library"><i class="fa fa-link" style="color:#FA023C"></i> documentación sobre la librería BME280 de SparkFun</a></p>
-</blockquote>
-<h3 id="configuracion-y-primera-lectura">Configuración y primera lectura</h3>
-<p>Por ahora, se proporciona únicamente la configuración, dejando como tarea continuar con el programa &hellip; tras ver lo que dicen sus diseñadores (documentación, ejemplos, &hellip;)</p>
+<p>Una vez visto el mecanismo de instalación y uso de librerías, se proporcionan los siguientes ejemplos para cada parte interesante del dispositivo, con vistas a utilizar todos o parte de los elementos para la última práctica, donde se construirá un nodo IoT WiFi completamente funcional.</p>
+<p>Se recomienda compilar, probar y salvar cada ejemplo, para asi ver las particularidades de cada uno, y tomar consciencia del trabajo que pueda necesitar unificar todo en un único programa.</p>
+<h3 id="bme280-temperatura-humedad-presion-altitud">BME280: Temperatura, Humedad, Presión, Altitud</h3>
+<h4 id="resumen">Resumen</h4>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>SparkFun BME280</code> de <em>SparkFun Electronics</em></td>
+<td align="center"><a href="https://github.com/sparkfun/SparkFun_BME280_Arduino_Library"><i class="fa fa-link" style="color:#FA023C"></i> Repositorio</a></td>
+<td align="center">Documentado con ejemplos</td>
+<td align="center"><a href="https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/master/examples"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
+<td align="center"><a href="https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/master/src"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional">Ejemplo funcional</h4>
 <pre><code class="C">/* Include required headers and/or libraries */
 #include &lt;Wire.h&gt;
 #include &quot;SparkFunBME280.h&quot;
@@ -279,6 +300,22 @@ void setup()
     /* Stop here (WDT will reset at some point) */
     while(1);
   }
+
+  /* -- Configure the sensor --
+   *  - Read  the  datasheet -
+   */
+  /* Filter coefficient.          | 0 to 4 is valid.   | See 3.4.4     */
+  BME280_obj.setFilter(2);
+  /* Time between readings.       | 0 to 7 valid.      | See table 27. */
+  BME280_obj.setStandbyTime(1);
+  /* 0 disables temp sensing.     | 0 to 16 are valid. | See table 24. */
+  BME280_obj.setTempOverSample(8);
+  /* 0 disables pressure sensing. | 0 to 16 are valid. | See table 23. */
+  BME280_obj.setPressureOverSample(8);
+  /* 0 disables humidity sensing. | 0 to 16 are valid. | See table 19. */
+  BME280_obj.setHumidityOverSample(8);
+  /* MODE_SLEEP, MODE_FORCED, MODE_NORMAL is valid.    | See 3.3       */
+  BME280_obj.setMode(MODE_NORMAL);
 }
 
 /*
@@ -289,13 +326,358 @@ void loop()
   /* Welcome message! Useful as a control point */
   Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
 
-  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   *  Ask for the data and print to console here !!
-   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  /* Read and print sensor data */
+  Serial.printf(&quot; - Temp.: %2.2f [C]\n&quot;,  BME280_obj.readTempC());
+  Serial.printf(&quot; - Temp.: %2.2f [F]\n&quot;,  BME280_obj.readTempF());
+  Serial.printf(&quot; - Hum..: %2.2f [%%]\n&quot;, BME280_obj.readFloatHumidity());
+  Serial.printf(&quot; - Pres.: %2.2f [Pa]\n&quot;, BME280_obj.readFloatPressure());
+  Serial.printf(&quot; - Alt..: %2.2f [m]\n&quot;,  BME280_obj.readFloatAltitudeMeters());
+  Serial.printf(&quot; - Alt..: %2.2f [Ft]\n&quot;, BME280_obj.readFloatAltitudeFeet());
 
   /* Ensure not to flood with a huge amount of fast data */
   delay(500);
 }
+</code></pre>
+
+<h4 id="salida-esperada">Salida esperada</h4>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+ - Temp.: 34.08 [C]
+ - Temp.: 93.34 [F]
+ - Hum..: 26.10 [%]
+ - Pres.: 101292.66 [Pa]
+ - Alt..: 2.69 [m]
+ - Alt..: 8.83 [Ft]
+Ahoy! ESP8266 here!
+---
+ - Temp.: 34.05 [C]
+ - Temp.: 93.29 [F]
+ - Hum..: 26.04 [%]
+ - Pres.: 101292.16 [Pa]
+ - Alt..: 2.73 [m]
+ - Alt..: 8.97 [Ft]
+</code></pre>
+
+<h3 id="mpu6050-temperatura-aceleracion-rotacion">MPU6050: Temperatura, Aceleración, Rotación</h3>
+<h4 id="resumen_1">Resumen</h4>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>MPU6050</code> de <em>Electronic Cats</em></td>
+<td align="center"><a href="https://github.com/electroniccats/mpu6050"><i class="fa fa-link" style="color:#FA023C"></i> Repositorio</a></td>
+<td align="center">Documentado con ejemplos</td>
+<td align="center"><a href="https://github.com/electroniccats/mpu6050/tree/master/examples"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
+<td align="center"><a href="https://github.com/electroniccats/mpu6050/tree/master/src"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional_1">Ejemplo funcional</h4>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;Wire.h&gt;
+#include &lt;I2Cdev.h&gt;
+#include &lt;MPU6050.h&gt;
+
+#define MPU6050_ADDRESS 0x68
+
+/* Instantiate a MPU6050 object called MPU6050_obj */
+MPU6050 accelgyro(MPU6050_ADDRESS);
+
+/* Used to translate from digital to human */
+struct meas_range
+{
+  uint16_t ranges[4];
+  uint8_t current;
+}
+MPU6050_range[2] =
+{
+  { .ranges = { 250, 500, 1000, 2000 }, .current = 0 },
+  { .ranges = { 2, 4, 8, 16 },          .current = 0 },
+};
+#define RANGE_GYRO  0
+#define RANGE_ACCEL 1
+
+/* Get a gyro or accel raw value and convert to human-readable */
+float raw_to_human(struct meas_range *range, int16_t raw_val)
+{
+  /* Uncomment to get details about conversion */
+  //printf(&quot;Converting 0x%04X\n&quot;
+  //       &quot; - %s range, current %u, value %u\n&quot;
+  //       &quot; - Converted value %2.2f\n&quot;,
+  //       raw_val,
+  //       (range == &amp;MPU6050_range[0])?&quot; Gyro&quot;:&quot;Accel&quot;,
+  //       range-&gt;current, range-&gt;ranges[range-&gt;current],
+  //       (((float)raw_val * range-&gt;ranges[range-&gt;current]) / 0x7FFF)
+  //       );
+  return (((float)raw_val * range-&gt;ranges[range-&gt;current]) / 0x7FFF);
+}
+
+/* Convert a temperature value, method differs from gyro/accel */
+float temp_to_human(int16_t raw_val)
+{
+  return (((float)raw_val / 340) + 36.53);
+}
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Join I2C bus and set it to 400 kHz */
+  Wire.begin();
+  Wire.setClock(400000);
+
+  /* Initialize the sensor */
+  accelgyro.initialize();
+
+  /* Check communication before continue */
+  if (accelgyro.testConnection() == false)
+  {
+    Serial.printf(&quot;The sensor did not respond. Please check wiring.\n&quot;);
+
+    /* Stop here (WDT will reset at some point) */
+    while(1);
+  }
+
+  /* By default, the library uses the following settings:
+   * - setFullScaleGyroRange(MPU6050_GYRO_FS_250)
+   * - setFullScaleAccelRange(MPU6050_ACCEL_FS_2)
+   */
+
+  /* Configure Gyroscope range, choose from:
+   * - MPU6050_GYRO_FS_250 ..: +/-250 deg/sec
+   * - MPU6050_GYRO_FS_500 ..: +/-500 deg/sec
+   * - MPU6050_GYRO_FS_1000 .: +/-1000 deg/sec
+   * - MPU6050_GYRO_FS_2000 .: +/-2000 deg/sec
+   *
+   * Uncomment the following two lines to set a different value
+   */
+  //MPU6050_range[RANGE_GYRO].current = MPU6050_GYRO_FS_2000;
+  //accelgyro.setFullScaleGyroRange(MPU6050_range[RANGE_GYRO].current);
+
+  /* Configure Accelerometer range, choose from:
+   * - MPU6050_ACCEL_FS_2 ...: +/-2g
+   * - MPU6050_ACCEL_FS_4 ...: +/-4g
+   * - MPU6050_ACCEL_FS_8 ...: +/-8g
+   * - MPU6050_ACCEL_FS_16 ..: +/-16g
+   *
+   * Uncomment the following two lines to set a different value
+   */
+  //MPU6050_range[RANGE_ACCEL].current = MPU6050_ACCEL_FS_16;
+  //accelgyro.setFullScaleAccelRange(MPU6050_range[RANGE_ACCEL].current);
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
+
+  /* Read and print sensor data */
+  Serial.printf(&quot; - Temperature ....: %2.2f [degC]\n&quot;,
+                temp_to_human(accelgyro.getTemperature()));
+  Serial.printf(&quot; - Rotation X .....: %2.2f [deg/sec]\n&quot;,
+                raw_to_human(&amp;MPU6050_range[RANGE_GYRO],
+                             accelgyro.getRotationX()));
+  Serial.printf(&quot; - Rotation Y .....: %2.2f [deg/sec]\n&quot;,
+                raw_to_human(&amp;MPU6050_range[RANGE_GYRO],
+                             accelgyro.getRotationY()));
+  Serial.printf(&quot; - Rotation Z .....: %2.2f [deg/sec]\n&quot;,
+                raw_to_human(&amp;MPU6050_range[RANGE_GYRO],
+                             accelgyro.getRotationZ()));
+  Serial.printf(&quot; - Acceleration X .: %2.2f [g]\n&quot;,
+                raw_to_human(&amp;MPU6050_range[RANGE_ACCEL],
+                             accelgyro.getAccelerationX()));
+  Serial.printf(&quot; - Acceleration Y .: %2.2f [g]\n&quot;,
+                raw_to_human(&amp;MPU6050_range[RANGE_ACCEL],
+                             accelgyro.getAccelerationY()));
+  Serial.printf(&quot; - Acceleration Z .: %2.2f [g]\n&quot;,
+                raw_to_human(&amp;MPU6050_range[RANGE_ACCEL],
+                             accelgyro.getAccelerationZ()));
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+</code></pre>
+
+<h4 id="salida-esperada_1">Salida esperada</h4>
+<blockquote>
+<p><strong>NOTA:</strong> Sin haberse corregido los offsets, los datos obtenidos pueden no tener sentido, pero lo importante de esta prueba es que varien con coherencia cuando se mueva la placa. La temperatura tambien subira o bajara, aunque en fracciones coherentes.</p>
+<p>Si los datos no varían, el sensor no se está midiendo correctamente.</p>
+</blockquote>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+ - Temperature ....: 32.81 [degC]
+ - Rotation X .....: 0.24 [deg/sec]
+ - Rotation Y .....: 3.66 [deg/sec]
+ - Rotation Z .....: -3.87 [deg/sec]
+ - Acceleration X .: 0.08 [g]
+ - Acceleration Y .: -0.19 [g]
+ - Acceleration Z .: 0.83 [g]
+Ahoy! ESP8266 here!
+---
+ - Temperature ....: 32.86 [degC]
+ - Rotation X .....: 0.10 [deg/sec]
+ - Rotation Y .....: 3.27 [deg/sec]
+ - Rotation Z .....: -3.88 [deg/sec]
+ - Acceleration X .: 0.08 [g]
+ - Acceleration Y .: -0.19 [g]
+ - Acceleration Z .: 0.83 [g]
+</code></pre>
+
+<h3 id="spiffs-ficheros-en-memoria-interna">SPIFFS: Ficheros en memoria interna</h3>
+<h4 id="resumen_2">Resumen</h4>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>FS</code> de <em>Ivan Grokhotkov</em></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.h"><i class="fa fa-link" style="color:#FA023C"></i>Repositorio (FS.h)</a></td>
+<td align="center"><a href="https://arduino-esp8266.readthedocs.io/en/2.5.0/filesystem.html"><i class="fa fa-link" style="color:#FA023C"></i> Documentación</a></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/libraries/esp8266/examples/ConfigFile/ConfigFile.ino"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplo</a></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.c"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional_2">Ejemplo funcional</h4>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;FS.h&gt;
+
+#define TESTFILE &quot;/test_file.txt&quot;
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Initialize the file system */
+  Serial.printf(&quot;Initializing SPIFFS\n&quot;);
+  if (SPIFFS.begin() == false)
+  {
+    Serial.printf(&quot;SPIFFS cannot be initialized\n&quot;);
+
+    /* Stop here (WDT will reset at some point) */
+    while(1) {};
+  }
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
+
+  File test_file;
+  #define MY_STR_LEN 1024
+  uint8_t my_string[MY_STR_LEN];
+  uint16_t my_line = 0;
+
+  /* The file already exist? */
+  if (SPIFFS.exists(TESTFILE))
+  {
+    Serial.printf(&quot;File '&quot; TESTFILE &quot;'' IS found'\n&quot;);
+  }
+  else
+  {
+    Serial.printf(&quot;File '&quot; TESTFILE &quot;'' NOT found'\n&quot;);
+  }
+
+  /* Mode 'a+' create if not exists:
+   *  - Read from the beginning of the file
+   *  - Append new data at the end
+   *  * Useful for buffers ;)
+   */
+  test_file = SPIFFS.open(TESTFILE, &quot;a+&quot;);
+  if (!test_file)
+  {
+    /* Oh man, this is serious */
+    Serial.printf(&quot;Cannot open '&quot; TESTFILE &quot;'' for appending'\n&quot;);
+  }
+  else
+  {
+    Serial.printf(&quot;Opened '&quot; TESTFILE &quot;'\n&quot;);
+
+    /* Opened, now put some (at the end of the file) */
+    Serial.printf(&quot;Filling file '&quot; TESTFILE &quot;' with some data\n&quot;);
+    test_file.printf(&quot;This is the first line\n&quot;);
+    test_file.printf(&quot;This is the second line\n&quot;);
+    test_file.printf(&quot;This is the third line\n&quot;);
+    test_file.close();
+
+    /* Mode 'r' create if not exists:
+     *  - Read from the beginning of the file
+     *  - Fails if file not exists
+     *  * Useful for safe readings without data modification
+     */
+    test_file = SPIFFS.open(TESTFILE, &quot;r&quot;);
+    Serial.printf(&quot;Reopened '&quot; TESTFILE &quot;' for reading\n&quot;);
+    Serial.printf(&quot;Contents of file '&quot; TESTFILE &quot;'\n&quot;);
+    my_line = 0;
+    while (test_file.position() &lt; test_file.size())
+    {
+      test_file.readBytesUntil('\n', my_string, MY_STR_LEN);
+      Serial.printf(&quot;Line %03d: %s\n&quot;, my_line++, my_string);
+    }
+
+    /* Done, free/close the file */
+    test_file.close();
+    Serial.printf(&quot;Closed '&quot; TESTFILE &quot;'\n&quot;);
+
+    /* Remove the file */
+    SPIFFS.remove(TESTFILE);
+    Serial.printf(&quot;Removed '&quot; TESTFILE &quot;'\n&quot;);
+  }
+
+  /* Process is locked until reset is performed */
+  Serial.printf(&quot;Locking now\n&quot;);
+  while (true)
+  {
+    /* Ensure other tasks are working (avoid WDT reset) */
+    yield();
+  }
+}
+</code></pre>
+
+<h4 id="salida-esperada_2">Salida esperada</h4>
+<pre><code class="text">Initializing SPIFFS
+Ahoy! ESP8266 here!
+---
+File '/test_file.txt'' NOT found'
+Opened '/test_file.txt'
+Filling file '/test_file.txt' with some data
+Contents of file '/test_file.txt'
+Line 000: This is the first line
+Line 001: This is the second line
+Line 002: This is the third line
+Closed '/test_file.txt'
+Removed '/test_file.txt'
+Locking now
 </code></pre></div>
         
         
