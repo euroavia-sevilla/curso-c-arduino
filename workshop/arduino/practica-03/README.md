@@ -47,25 +47,6 @@ Una vez visto el mecanismo de instalación y uso de librerías, se proporcionan 
 Se recomienda compilar, probar y salvar cada ejemplo, para asi ver las particularidades de cada uno, y tomar consciencia del trabajo que pueda necesitar unificar todo en un único programa.
 
 
-### Template
-
-#### Resumen
-
-| Libreria | Enlaces de interés | | | |
-| :----- | :-----: | :-----: | :-----: | :-----: |
-| `NAME` de *AUTHOR* | [<i class="fa fa-link" style="color:#FA023C"></i> Repositorio]() | [<i class="fa fa-link" style="color:#FA023C"></i> Documentación]() | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplos]() | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente]() |
-
-#### Ejemplo funcional
-
-```C
-```
-
-#### Salida esperada
-
-```text
-```
-
-
 ### BME280: Temperatura, Humedad, Presión, Altitud
 
 #### Resumen
@@ -168,6 +149,7 @@ Ahoy! ESP8266 here!
  - Alt..: 2.73 [m]
  - Alt..: 8.97 [Ft]
 ```
+
 
 ### MPU6050: Temperatura, Aceleración, Rotación
 
@@ -338,3 +320,137 @@ Ahoy! ESP8266 here!
  - Acceleration Y .: -0.19 [g]
  - Acceleration Z .: 0.83 [g]
 ```
+
+
+### SPIFFS: Ficheros en memoria interna
+
+#### Resumen
+
+| Libreria | Enlaces de interés | | | |
+| :----- | :-----: | :-----: | :-----: | :-----: |
+| `FS` de *Ivan Grokhotkov* | [<i class="fa fa-link" style="color:#FA023C"></i>Repositorio (FS.h)](https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.h) | [<i class="fa fa-link" style="color:#FA023C"></i> Documentación](https://arduino-esp8266.readthedocs.io/en/2.5.0/filesystem.html) | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplo](https://github.com/esp8266/Arduino/blob/2.5.0/libraries/esp8266/examples/ConfigFile/ConfigFile.ino) | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente](https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.c) |
+
+#### Ejemplo funcional
+
+```C
+/* Include required headers and/or libraries */
+#include <FS.h>
+
+#define TESTFILE "/test_file.txt"
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Initialize the file system */
+  Serial.printf("Initializing SPIFFS\n");
+  if (SPIFFS.begin() == false)
+  {
+    Serial.printf("SPIFFS cannot be initialized\n");
+    
+    /* Stop here (WDT will reset at some point) */
+    while(1) {};
+  }
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Welcome message! Useful as a control point */
+  Serial.printf("Ahoy! ESP8266 here!\n---\n");
+
+  File test_file;
+  #define MY_STR_LEN 1024
+  uint8_t my_string[MY_STR_LEN];
+  uint16_t my_line = 0;
+
+  /* The file already exist? */
+  if (SPIFFS.exists(TESTFILE))
+  {
+    Serial.printf("File '" TESTFILE "'' IS found'\n");
+  }
+  else
+  {
+    Serial.printf("File '" TESTFILE "'' NOT found'\n");
+  }
+
+  /* Mode 'a+' create if not exists:
+   *  - Read from the beginning of the file
+   *  - Append new data at the end
+   *  * Useful for buffers ;)
+   */
+  test_file = SPIFFS.open(TESTFILE, "a+");
+  if (!test_file)
+  {
+    /* Oh man, this is serious */
+    Serial.printf("Cannot open '" TESTFILE "'' for appending'\n");
+  }
+  else
+  {
+    Serial.printf("Opened '" TESTFILE "'\n");
+
+    /* Opened, now put some (at the end of the file) */
+    Serial.printf("Filling file '" TESTFILE "' with some data\n");
+    test_file.printf("This is the first line\n");
+    test_file.printf("This is the second line\n");
+    test_file.printf("This is the third line\n");
+    test_file.close();
+
+    /* Mode 'r' create if not exists:
+     *  - Read from the beginning of the file
+     *  - Fails if file not exists
+     *  * Useful for safe readings without data modification
+     */
+    test_file = SPIFFS.open(TESTFILE, "r");
+    Serial.printf("Reopened '" TESTFILE "' for reading\n");
+    Serial.printf("Contents of file '" TESTFILE "'\n");
+    my_line = 0;
+    while (test_file.position() < test_file.size())
+    {
+      test_file.readBytesUntil('\n', my_string, MY_STR_LEN);
+      Serial.printf("Line %03d: %s\n", my_line++, my_string);
+    }
+
+    /* Done, free/close the file */
+    test_file.close();
+    Serial.printf("Closed '" TESTFILE "'\n");
+
+    /* Remove the file */
+    SPIFFS.remove(TESTFILE);
+    Serial.printf("Removed '" TESTFILE "'\n");
+  }
+
+  /* Process is locked until reset is performed */
+  Serial.printf("Locking now\n");
+  while (true)
+  {
+    /* Ensure other tasks are working (avoid WDT reset) */
+    yield();
+  }
+}
+```
+
+#### Salida esperada
+
+```text
+Initializing SPIFFS
+Ahoy! ESP8266 here!
+---
+File '/test_file.txt'' NOT found'
+Opened '/test_file.txt'
+Filling file '/test_file.txt' with some data
+Contents of file '/test_file.txt'
+Line 000: This is the first line
+Line 001: This is the second line
+Line 002: This is the third line
+Closed '/test_file.txt'
+Removed '/test_file.txt'
+Locking now
+```
+

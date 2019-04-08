@@ -35,6 +35,7 @@ void loop()
   uint8_t my_string[MY_STR_LEN];
   uint16_t my_line = 0;
 
+  /* The file already exist? */
   if (SPIFFS.exists(TESTFILE))
   {
     Serial.printf("File '" TESTFILE "'' IS found'\n");
@@ -66,11 +67,11 @@ void loop()
     test_file.printf("This is the third line\n");
     test_file.close();
 
-  /* Mode 'r' create if not exists:
-   *  - Read from the beginning of the file
-   *  - Fails if file not exists
-   *  * Useful for safe readings without data modification
-   */
+    /* Mode 'r' create if not exists:
+     *  - Read from the beginning of the file
+     *  - Fails if file not exists
+     *  * Useful for safe readings without data modification
+     */
     test_file = SPIFFS.open(TESTFILE, "r");
     Serial.printf("Reopened '" TESTFILE "' for reading\n");
     Serial.printf("Contents of file '" TESTFILE "'\n");
@@ -78,13 +79,14 @@ void loop()
     while (test_file.position() < test_file.size())
     {
       test_file.readBytesUntil('\n', my_string, MY_STR_LEN);
-      Serial.printf("Line %03d: %s|'\n", my_line++, my_string);
+      Serial.printf("Line %03d: %s\n", my_line++, my_string);
     }
 
-    /* Done, free/close + remove the file and lock */
+    /* Done, free/close the file */
     test_file.close();
     Serial.printf("Closed '" TESTFILE "'\n");
 
+    /* Remove the file */
     SPIFFS.remove(TESTFILE);
     Serial.printf("Removed '" TESTFILE "'\n");
   }
