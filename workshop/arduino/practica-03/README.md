@@ -51,6 +51,10 @@ Se recomienda compilar, probar y salvar cada ejemplo, para asi ver las particula
 
 #### Resumen
 
+La libreria propuesta se encarga de todo el proceso de bajo nivel encargado de pedir los datos en bruto y procesarlos. El programador solo tendrá que pedir los datos, obteniendolos ya convertidos y en `float`.
+
+Se instala desde el gestor de librerias interno de Arduino.
+
 | Libreria | Enlaces de interés | | | |
 | :----- | :-----: | :-----: | :-----: | :-----: |
 | `SparkFun BME280` de *SparkFun Electronics* | [<i class="fa fa-link" style="color:#FA023C"></i> Repositorio](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library) | Documentado con ejemplos | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplos](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/master/examples) | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente](https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/tree/master/src) |
@@ -154,6 +158,12 @@ Ahoy! ESP8266 here!
 ### MPU6050: Temperatura, Aceleración, Rotación
 
 #### Resumen
+
+La libreria propuesta se encarga de hacer el trabajo de bajo nivel de pedir datos y convertirlos, aunque queda para el programador la puesta a 0 y corrección de offset.
+
+Se han probado librerias en principio mas completas, pero que en el momento de la ejecución fallaban o no conseguian una comunicación adecuada con el sensor.
+
+Se instala desde el gestor de librerias interno de Arduino.
 
 | Libreria | Enlaces de interés | | | |
 | :----- | :-----: | :-----: | :-----: | :-----: |
@@ -325,6 +335,18 @@ Ahoy! ESP8266 here!
 ### SPIFFS: Ficheros en memoria interna
 
 #### Resumen
+
+Esta librería se encarga de todo el proceso de preparación y uso de una parte de la flash como espacio de almacenamiento de ficheros.
+
+Un caso habitual es la necesidad de salvar información para acceder a ella en otro momento. Se suelen usar chips EEPROM o Flash, o dispositivos externos de almacenamiento, como pendrives.
+
+SPIFFS surge como una solución para poder compartir el mismo espacio de almacenamiento que se usa para el programa, pero para el uso indiscriminado como almacenamiento de ficheros, lo que ahorra la necesidad de un chip extra, simplificando tanto el circuito como el programa finales.
+
+> **NOTA:** Es necesario **configurar Arduino** para que asigne algo de espacio para SPIFFS. Esto se hace en la configuración de la placa, donde se usará la opcion de `1 Mb para Programa y 3 Mb para SPIFFS`, ya que inicialmente el programa no llegará a ocupar 1 Mb. En caso de ser asi, sera necesario modificar esta opción.
+> 
+> **NOTA:** Es posible que tras programar la placa, esta no se arranque bien y quede en un estado errático. Sólo se deberá resetear con el pulsador lateral, y esperar el mensaje `Initializing SPIFFS`. El primer arranque **podrá tardar bastante**, ya que está preparando el espacio, pero a partir del segundo arranque, todo será casi instantáneo.
+
+En este caso no es una libreria instalable de forma individual, ya está instalada como parte del soporte para ESP8266, por lo que para su uso sólo será necesario incluir la cabecera.
 
 | Libreria | Enlaces de interés | | | |
 | :----- | :-----: | :-----: | :-----: | :-----: |
