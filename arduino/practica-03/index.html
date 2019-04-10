@@ -82,7 +82,7 @@
                         
                             
 <li >
-    <a href="../../introduccion/">Introducción</a>
+    <a href="../../introduccion/">Index</a>
 </li>
 
                         
@@ -209,6 +209,9 @@
                 <li class="third-level"><a href="#bme280-temperatura-humedad-presion-altitud">BME280: Temperatura, Humedad, Presión, Altitud</a></li>
                 <li class="third-level"><a href="#mpu6050-temperatura-aceleracion-rotacion">MPU6050: Temperatura, Aceleración, Rotación</a></li>
                 <li class="third-level"><a href="#spiffs-ficheros-en-memoria-interna">SPIFFS: Ficheros en memoria interna</a></li>
+                <li class="third-level"><a href="#wifi-conexion-a-red-y-peticion-http-usando-tcp">WiFi: Conexión a red y petición HTTP usando TCP</a></li>
+                <li class="third-level"><a href="#wifimulti-conectividad-entre-redes">WiFiMulti: Conectividad entre redes</a></li>
+                <li class="third-level"><a href="#template">Template</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
@@ -247,6 +250,8 @@
 <p>Se recomienda compilar, probar y salvar cada ejemplo, para asi ver las particularidades de cada uno, y tomar consciencia del trabajo que pueda necesitar unificar todo en un único programa.</p>
 <h3 id="bme280-temperatura-humedad-presion-altitud">BME280: Temperatura, Humedad, Presión, Altitud</h3>
 <h4 id="resumen">Resumen</h4>
+<p>La libreria propuesta se encarga de todo el proceso de bajo nivel encargado de pedir los datos en bruto y procesarlos. El programador solo tendrá que pedir los datos, obteniendolos ya convertidos y en <code>float</code>.</p>
+<p>Se instala desde el gestor de librerias interno de Arduino.</p>
 <table>
 <thead>
 <tr>
@@ -360,6 +365,9 @@ Ahoy! ESP8266 here!
 
 <h3 id="mpu6050-temperatura-aceleracion-rotacion">MPU6050: Temperatura, Aceleración, Rotación</h3>
 <h4 id="resumen_1">Resumen</h4>
+<p>La libreria propuesta se encarga de hacer el trabajo de bajo nivel de pedir datos y convertirlos, aunque queda para el programador la puesta a 0 y corrección de offset.</p>
+<p>Se han probado librerias en principio mas completas, pero que en el momento de la ejecución fallaban o no conseguian una comunicación adecuada con el sensor.</p>
+<p>Se instala desde el gestor de librerias interno de Arduino.</p>
 <table>
 <thead>
 <tr>
@@ -540,6 +548,14 @@ Ahoy! ESP8266 here!
 
 <h3 id="spiffs-ficheros-en-memoria-interna">SPIFFS: Ficheros en memoria interna</h3>
 <h4 id="resumen_2">Resumen</h4>
+<p>Esta librería se encarga de todo el proceso de preparación y uso de una parte de la flash como espacio de almacenamiento de ficheros.</p>
+<p>Un caso habitual es la necesidad de salvar información para acceder a ella en otro momento. Se suelen usar chips EEPROM o Flash, o dispositivos externos de almacenamiento, como pendrives.</p>
+<p>SPIFFS surge como una solución para poder compartir el mismo espacio de almacenamiento que se usa para el programa, pero para el uso indiscriminado como almacenamiento de ficheros, lo que ahorra la necesidad de un chip extra, simplificando tanto el circuito como el programa finales.</p>
+<blockquote>
+<p><strong>NOTA:</strong> Es necesario <strong>configurar Arduino</strong> para que asigne algo de espacio para SPIFFS. Esto se hace en la configuración de la placa, donde se usará la opcion de <code>1 Mb para Programa y 3 Mb para SPIFFS</code>, ya que inicialmente el programa no llegará a ocupar 1 Mb. En caso de ser asi, sera necesario modificar esta opción.</p>
+<p><strong>NOTA:</strong> Es posible que tras programar la placa, esta no se arranque bien y quede en un estado errático. Sólo se deberá resetear con el pulsador lateral, y esperar el mensaje <code>Initializing SPIFFS</code>. El primer arranque <strong>podrá tardar bastante</strong>, ya que está preparando el espacio, pero a partir del segundo arranque, todo será casi instantáneo.</p>
+</blockquote>
+<p>En este caso no es una libreria instalable de forma individual, ya está instalada como parte del soporte para ESP8266, por lo que para su uso sólo será necesario incluir la cabecera.</p>
 <table>
 <thead>
 <tr>
@@ -556,7 +572,7 @@ Ahoy! ESP8266 here!
 <td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.h"><i class="fa fa-link" style="color:#FA023C"></i>Repositorio (FS.h)</a></td>
 <td align="center"><a href="https://arduino-esp8266.readthedocs.io/en/2.5.0/filesystem.html"><i class="fa fa-link" style="color:#FA023C"></i> Documentación</a></td>
 <td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/libraries/esp8266/examples/ConfigFile/ConfigFile.ino"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplo</a></td>
-<td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.c"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.cpp"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
 </tr>
 </tbody>
 </table>
@@ -678,7 +694,382 @@ Line 002: This is the third line
 Closed '/test_file.txt'
 Removed '/test_file.txt'
 Locking now
-</code></pre></div>
+</code></pre>
+
+<h3 id="wifi-conexion-a-red-y-peticion-http-usando-tcp">WiFi: Conexión a red y petición HTTP usando TCP</h3>
+<h4 id="resumen_3">Resumen</h4>
+<p>Esta libreria permite conectar el dispositivo a redes WiFi, y por tanto, a servidores mediante TCP, UDP, &hellip;</p>
+<p>Se tendrá que definir la red a la que conectar, y su password. Una vez esté el dispositivo conectado se podrá comenzar una conexión TCP, como se muestra en el ejemplo.</p>
+<p>En este caso no es una libreria instalable de forma individual, ya está instalada como parte del soporte para ESP8266, por lo que para su uso sólo será necesario incluir la cabecera.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>ESP8266WiFi.h</code></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WiFi/src/ESP8266WiFi.h"><i class="fa fa-link" style="color:#FA023C"></i> Repositorio (ESP8266WiFi.h)</a></td>
+<td align="center"><a href="https://arduino-esp8266.readthedocs.io/en/2.5.0/esp8266wifi/readme.html"><i class="fa fa-link" style="color:#FA023C"></i> Documentación</a></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WiFi/examples"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WiFi/src"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional_3">Ejemplo funcional</h4>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;ESP8266WiFi.h&gt;
+
+/* This block allows to be configured outside this code, but will use
+ * the following information as default in case is not */
+#if !defined(STASSID)
+  #define STASSID &quot;IoTesla&quot;
+  #define STAPSK  &quot;euroavia2019&quot;
+#endif
+
+/* Create wifi network information variables*/
+const char    *ssid     = STASSID;
+const char    *password = STAPSK;
+
+/* Define the host and port to connect */
+const char    *host     = &quot;192.168.1.1&quot;;
+const uint16_t port     = 80;
+
+/* Data holder for received data */
+#define RCV_DATA_MAX 1024
+uint8_t rcv_data[RCV_DATA_MAX] = { 0x00 };
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Uncomment the following line to enable debug output */
+  //Serial.setDebugOutput(true);
+
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
+
+  /* Report information about WiFi status */
+  Serial.printf(&quot;Connecting to '%s' access point [&quot;, ssid);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  /* Wait until connected */
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.printf(&quot;.&quot;);
+    delay(250);
+  }                
+
+  /* Ahoy! */
+  Serial.printf(&quot;]\nConnected! Assigned IP: %s\n&quot;,
+                WiFi.localIP().toString().c_str());
+  /* Explaining the conversion shown over here:
+   * 
+   * localIP() returns a IPAddress class member
+   *  - toString() returns a String class member
+   *   - c_str() returns a C compliant string pointer
+   */
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Now we're going to connect to a remote host using TCP */
+  Serial.printf(&quot;Connecting to %s:%i ... &quot;,
+                host, port);
+
+  /* To create a TCP connection we need the WiFiClient class */
+  WiFiClient TCPClient;
+
+  /* Try to connect */
+  if (!TCPClient.connect(host, port))
+  {
+    Serial.printf(&quot;Failed!\nRetrying in 5 seconds ...\n&quot;);
+    delay(5000);
+    return;
+  }
+  Serial.printf(&quot;Done!\n&quot;);
+
+  /* Send a request
+   * As the remote host is a web server, use a compliant HTTP request
+   */
+  Serial.printf(&quot;Requesting /index.html\n&quot;);
+  if (TCPClient.connected())
+  {
+    /* This is a common HTTP request (and uses \r\n instead of \n) */
+    TCPClient.printf(&quot;GET /index.html HTTP/1.1\r\n&quot;
+                     &quot;Host: %s\r\n&quot;
+                     &quot;Accept: image/gif, image/jpeg, */*\r\n&quot;
+                     &quot;Accept-Language: en-us\r\n&quot;
+                     &quot;Accept-Encoding: gzip, deflate\r\n&quot;
+                     &quot;User-Agent: IoTesla/1.0\r\n&quot;
+                     &quot;\r\n&quot;
+                     &quot;\r\n&quot;,
+                     host);
+  }
+
+  /* Wait for the data to arrive
+   * Attention must be paid to this type of wait block, as it don't use
+   * simple delay to wait for incoming data. It waits &quot;up to 5 seconds&quot;,
+   * but will stop as soon as the data is ready.
+   */
+  /* Save current time in milliseconds */
+  unsigned long timeout = millis();
+
+  /* Wait until data is ready */
+  while (TCPClient.available() == 0)
+  {
+    /* Not yet ready, we waited for more than 5 seconds? */
+    if (millis() - timeout &gt; 5000)
+    {
+      /* 5 seconds lapse is ended, reloop again after 10 seconds */
+      Serial.printf(&quot;Connection timeout, no response\n&quot;);
+      TCPClient.stop();
+      delay(10000);
+      return;
+    }
+  }
+
+  /* Show the server response over the serial connection */
+  Serial.printf(&quot;Response received:\n&quot;);
+
+  /* Print data while still available (pay attention to %s format) */
+  while (TCPClient.available())
+  {
+    Serial.printf(&quot;Printing %i bytes ---\n%.*s\n---\n&quot;,
+                  TCPClient.read(rcv_data, RCV_DATA_MAX),
+                  RCV_DATA_MAX, rcv_data);
+  }
+
+  /* Wrap-up and go! It's finished! */
+  Serial.printf(&quot;Closing connection. Reloop in 10 seconds ...\n&quot;);
+  TCPClient.stop();
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(10000);
+}
+</code></pre>
+
+<h4 id="salida-esperada_3">Salida esperada</h4>
+<p>En el caso del router <code>IoTesla</code> usado en el taller, pueden darse dos situaciones: Cuando envíe contenido o cuando sólo mantenga la conexión.</p>
+<p>Manteniendo la conexión activa:</p>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+Connecting to 'IoTesla' access point [........]
+Connected! Assigned IP: 192.168.1.245
+Connecting to 192.168.1.1:80 ... Done!
+Requesting /index.html
+Response received:
+Printing 41 bytes ---
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+
+---
+Closing connection. Reloop in 10 seconds ...
+</code></pre>
+
+<p>Contenido de <code>/index.html</code>:</p>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+Connecting to 'IoTesla' access point [........]
+Connected! Assigned IP: 192.168.1.245
+Connecting to 192.168.1.1:80 ... Done!
+Requesting /index.html
+Response received:
+Printing 577 bytes ---
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+Keep-Alive: timeout=20
+ETag: &quot;3dc-1ef-59e641ec&quot;
+Last-Modified: Tue, 17 Oct 2017 17:46:20 GMT
+Date: Wed, 10 Apr 2019 16:34:12 GMT
+Content-Type: text/html
+Content-Length: 495
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Cache-Control&quot; content=&quot;no-cache&quot; /&gt;
+&lt;meta http-equiv=&quot;refresh&quot; content=&quot;0; URL=/cgi-bin/luci&quot; /&gt;
+&lt;/head&gt;
+&lt;body style=&quot;background-color: white&quot;&gt;
+&lt;a s
+---
+Closing connection. Reloop in 10 seconds ...
+</code></pre>
+
+<h3 id="wifimulti-conectividad-entre-redes">WiFiMulti: Conectividad entre redes</h3>
+<h4 id="resumen_4">Resumen</h4>
+<p>Esta libreria incrementa las posibilidades de la libreria WiFi al automatizar el proceso de mantener la conectividad siempre que sea posible. Se encargará de intentar la conexion a una red y mantenerla, y en caso de perderse, repetira el proceso con otra de las redes configuradas, hasta que recupere la conectividad.</p>
+<p>El programador sólo tendrá que definir las redes que conocerá el dispositivo, con sus passwords en caso de necesitarse, y luego llamar al metodo <code>.run()</code> en el loop principal para mantener actualizado el estado de la libreria.</p>
+<p>Esto facilitará la tarea de utilizarlo en el taller, en casa, en el trabajo &hellip; con solo configurar una sola vez las posibles redes que tendrá disponibles en algún momento.</p>
+<p>En este caso no es una libreria instalable de forma individual, ya está instalada como parte del soporte para ESP8266, por lo que para su uso sólo será necesario incluir la cabecera.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>ESP8266WiFiMulti</code> de <em>Markus Sattler</em></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/libraries/ESP8266WiFi/src/ESP8266WiFiMulti.h"><i class="fa fa-link" style="color:#FA023C"></i> Repositorio (ESP8266WiFiMulti.h)</a></td>
+<td align="center">Documentado en ejemplos</td>
+<td align="center"><a href="https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/station-examples.html#introduction"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
+<td align="center"><a href="https://github.com/esp8266/Arduino/blob/2.5.0/libraries/ESP8266WiFi/src/ESP8266WiFiMulti.cpp"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional_4">Ejemplo funcional</h4>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;ESP8266WiFi.h&gt;
+#include &lt;ESP8266WiFiMulti.h&gt;
+
+/* Instantiate a ESP8266WiFiMulti object called WiFiMulti */
+ESP8266WiFiMulti WiFiMulti;
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Comment the following line to disable debug output */
+  Serial.setDebugOutput(true);
+
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
+
+  /* Add your home/personal wifi here */
+  WiFiMulti.addAP(&quot;personal-wifi&quot;, &quot;the_password&quot;);
+
+  /* If not found, will try to connect to this one */
+  WiFiMulti.addAP(&quot;IoTesla&quot;,       &quot;euroavia2019&quot;);
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Pass the control to WifiMulti so it can check the network */
+  switch (WiFiMulti.run())
+  {
+    /* 'WiFiMulti.run()' returns a status code.
+     * The following switch..case shows all the valid cases for didactic
+     * purposes, but tipically is only checked one or two cases, if so.
+     */
+
+    case WL_IDLE_STATUS:
+      Serial.printf(&quot;Returned WL_IDLE_STATUS\n&quot;);
+      break;
+
+    case WL_NO_SSID_AVAIL:
+      Serial.printf(&quot;Returned WL_NO_SSID_AVAIL\n&quot;);
+      break;
+
+    case WL_SCAN_COMPLETED:
+      Serial.printf(&quot;Returned WL_SCAN_COMPLETED\n&quot;);
+      break;
+
+    case WL_CONNECTED:
+      Serial.printf(&quot;Returned WL_CONNECTED\n&quot;);
+      break;
+
+    case WL_CONNECT_FAILED:
+      Serial.printf(&quot;Returned WL_CONNECT_FAILED\n&quot;);
+      break;
+
+    case WL_CONNECTION_LOST:
+      Serial.printf(&quot;Returned WL_CONNECTION_LOST\n&quot;);
+      break;
+
+    case WL_DISCONNECTED:
+      Serial.printf(&quot;Returned WL_DISCONNECTED\n&quot;);
+      break;
+  }
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+</code></pre>
+
+<h4 id="salida-esperada_4">Salida esperada</h4>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+scandone
+Returned WL_DISCONNECTED
+Returned WL_NO_SSID_AVAIL
+Returned WL_NO_SSID_AVAIL
+Returned WL_NO_SSID_AVAIL
+Returned WL_NO_SSID_AVAIL
+scandone
+scandone
+state: 0 -&gt; 2 (b0)
+state: 2 -&gt; 3 (0)
+state: 3 -&gt; 5 (10)
+add 0
+aid 3
+cnt 
+
+connected with IoTesla, channel 9
+dhcp client start...
+ip:192.168.1.245,mask:255.255.255.0,gw:192.168.1.1
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+</code></pre>
+
+<h3 id="template">Template</h3>
+<h4 id="resumen_5">Resumen</h4>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>NAME</code> de <em>AUTHOR</em></td>
+<td align="center"><a href=""><i class="fa fa-link" style="color:#FA023C"></i> Repositorio</a></td>
+<td align="center"><a href=""><i class="fa fa-link" style="color:#FA023C"></i> Documentación</a></td>
+<td align="center"><a href=""><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
+<td align="center"><a href=""><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional_5">Ejemplo funcional</h4>
+<pre><code class="C"></code></pre>
+
+<h4 id="salida-esperada_5">Salida esperada</h4>
+<pre><code class="text"></code></pre></div>
         
         
     </div>
