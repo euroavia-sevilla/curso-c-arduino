@@ -350,7 +350,7 @@ En este caso no es una libreria instalable de forma individual, ya está instala
 
 | Libreria | Enlaces de interés | | | |
 | :----- | :-----: | :-----: | :-----: | :-----: |
-| `FS` de *Ivan Grokhotkov* | [<i class="fa fa-link" style="color:#FA023C"></i>Repositorio (FS.h)](https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.h) | [<i class="fa fa-link" style="color:#FA023C"></i> Documentación](https://arduino-esp8266.readthedocs.io/en/2.5.0/filesystem.html) | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplo](https://github.com/esp8266/Arduino/blob/2.5.0/libraries/esp8266/examples/ConfigFile/ConfigFile.ino) | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente](https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.c) |
+| `FS` de *Ivan Grokhotkov* | [<i class="fa fa-link" style="color:#FA023C"></i>Repositorio (FS.h)](https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.h) | [<i class="fa fa-link" style="color:#FA023C"></i> Documentación](https://arduino-esp8266.readthedocs.io/en/2.5.0/filesystem.html) | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplo](https://github.com/esp8266/Arduino/blob/2.5.0/libraries/esp8266/examples/ConfigFile/ConfigFile.ino) | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente](https://github.com/esp8266/Arduino/blob/2.5.0/cores/esp8266/FS.cpp) |
 
 #### Ejemplo funcional
 
@@ -476,3 +476,342 @@ Removed '/test_file.txt'
 Locking now
 ```
 
+
+### WiFi: Conexión a red y petición HTTP usando TCP
+
+#### Resumen
+
+Esta libreria permite conectar el dispositivo a redes WiFi, y por tanto, a servidores mediante TCP, UDP, ...
+
+Se tendrá que definir la red a la que conectar, y su password. Una vez esté el dispositivo conectado se podrá comenzar una conexión TCP, como se muestra en el ejemplo.
+
+En este caso no es una libreria instalable de forma individual, ya está instalada como parte del soporte para ESP8266, por lo que para su uso sólo será necesario incluir la cabecera.
+
+| Libreria | Enlaces de interés | | | |
+| :----- | :-----: | :-----: | :-----: | :-----: |
+| `ESP8266WiFi.h` | [<i class="fa fa-link" style="color:#FA023C"></i> Repositorio (ESP8266WiFi.h)](https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WiFi/src/ESP8266WiFi.h) | [<i class="fa fa-link" style="color:#FA023C"></i> Documentación](https://arduino-esp8266.readthedocs.io/en/2.5.0/esp8266wifi/readme.html) | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplos](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WiFi/examples) | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente](https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266WiFi/src) |
+
+#### Ejemplo funcional
+
+```C
+/* Include required headers and/or libraries */
+#include <ESP8266WiFi.h>
+
+/* This block allows to be configured outside this code, but will use
+ * the following information as default in case is not */
+#if !defined(STASSID)
+  #define STASSID "IoTesla"
+  #define STAPSK  "euroavia2019"
+#endif
+
+/* Create wifi network information variables*/
+const char    *ssid     = STASSID;
+const char    *password = STAPSK;
+
+/* Define the host and port to connect */
+const char    *host     = "192.168.1.1";
+const uint16_t port     = 80;
+
+/* Data holder for received data */
+#define RCV_DATA_MAX 1024
+uint8_t rcv_data[RCV_DATA_MAX] = { 0x00 };
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Uncomment the following line to enable debug output */
+  //Serial.setDebugOutput(true);
+
+  /* Welcome message! Useful as a control point */
+  Serial.printf("Ahoy! ESP8266 here!\n---\n");
+
+  /* Report information about WiFi status */
+  Serial.printf("Connecting to '%s' access point [", ssid);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  /* Wait until connected */
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.printf(".");
+    delay(250);
+  }                
+
+  /* Ahoy! */
+  Serial.printf("]\nConnected! Assigned IP: %s\n",
+                WiFi.localIP().toString().c_str());
+  /* Explaining the conversion shown over here:
+   * 
+   * localIP() returns a IPAddress class member
+   *  - toString() returns a String class member
+   *   - c_str() returns a C compliant string pointer
+   */
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Now we're going to connect to a remote host using TCP */
+  Serial.printf("Connecting to %s:%i ... ",
+                host, port);
+
+  /* To create a TCP connection we need the WiFiClient class */
+  WiFiClient TCPClient;
+
+  /* Try to connect */
+  if (!TCPClient.connect(host, port))
+  {
+    Serial.printf("Failed!\nRetrying in 5 seconds ...\n");
+    delay(5000);
+    return;
+  }
+  Serial.printf("Done!\n");
+
+  /* Send a request
+   * As the remote host is a web server, use a compliant HTTP request
+   */
+  Serial.printf("Requesting /index.html\n");
+  if (TCPClient.connected())
+  {
+    /* This is a common HTTP request (and uses \r\n instead of \n) */
+    TCPClient.printf("GET /index.html HTTP/1.1\r\n"
+                     "Host: %s\r\n"
+                     "Accept: image/gif, image/jpeg, */*\r\n"
+                     "Accept-Language: en-us\r\n"
+                     "Accept-Encoding: gzip, deflate\r\n"
+                     "User-Agent: IoTesla/1.0\r\n"
+                     "\r\n"
+                     "\r\n",
+                     host);
+  }
+
+  /* Wait for the data to arrive
+   * Attention must be paid to this type of wait block, as it don't use
+   * simple delay to wait for incoming data. It waits "up to 5 seconds",
+   * but will stop as soon as the data is ready.
+   */
+  /* Save current time in milliseconds */
+  unsigned long timeout = millis();
+
+  /* Wait until data is ready */
+  while (TCPClient.available() == 0)
+  {
+    /* Not yet ready, we waited for more than 5 seconds? */
+    if (millis() - timeout > 5000)
+    {
+      /* 5 seconds lapse is ended, reloop again after 10 seconds */
+      Serial.printf("Connection timeout, no response\n");
+      TCPClient.stop();
+      delay(10000);
+      return;
+    }
+  }
+
+  /* Show the server response over the serial connection */
+  Serial.printf("Response received:\n");
+
+  /* Print data while still available (pay attention to %s format) */
+  while (TCPClient.available())
+  {
+    Serial.printf("Printing %i bytes ---\n%.*s\n---\n",
+                  TCPClient.read(rcv_data, RCV_DATA_MAX),
+                  RCV_DATA_MAX, rcv_data);
+  }
+
+  /* Wrap-up and go! It's finished! */
+  Serial.printf("Closing connection. Reloop in 10 seconds ...\n");
+  TCPClient.stop();
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(10000);
+}
+```
+
+#### Salida esperada
+
+En el caso del router `IoTesla` usado en el taller, pueden darse dos situaciones: Cuando envíe contenido o cuando sólo mantenga la conexión.
+
+Manteniendo la conexión activa:
+
+```text
+Ahoy! ESP8266 here!
+---
+Connecting to 'IoTesla' access point [........]
+Connected! Assigned IP: 192.168.1.245
+Connecting to 192.168.1.1:80 ... Done!
+Requesting /index.html
+Response received:
+Printing 41 bytes ---
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+
+---
+Closing connection. Reloop in 10 seconds ...
+```
+
+Contenido de `/index.html`:
+
+```text
+Ahoy! ESP8266 here!
+---
+Connecting to 'IoTesla' access point [........]
+Connected! Assigned IP: 192.168.1.245
+Connecting to 192.168.1.1:80 ... Done!
+Requesting /index.html
+Response received:
+Printing 577 bytes ---
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+Keep-Alive: timeout=20
+ETag: "3dc-1ef-59e641ec"
+Last-Modified: Tue, 17 Oct 2017 17:46:20 GMT
+Date: Wed, 10 Apr 2019 16:34:12 GMT
+Content-Type: text/html
+Content-Length: 495
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="refresh" content="0; URL=/cgi-bin/luci" />
+</head>
+<body style="background-color: white">
+<a s
+---
+Closing connection. Reloop in 10 seconds ...
+```
+
+
+### WiFiMulti: Conectividad entre redes
+
+#### Resumen
+
+Esta libreria incrementa las posibilidades de la libreria WiFi al automatizar el proceso de mantener la conectividad siempre que sea posible. Se encargará de intentar la conexion a una red y mantenerla, y en caso de perderse, repetira el proceso con otra de las redes configuradas, hasta que recupere la conectividad.
+
+El programador sólo tendrá que definir las redes que conocerá el dispositivo, con sus passwords en caso de necesitarse, y luego llamar al metodo `.run()` en el loop principal para mantener actualizado el estado de la libreria.
+
+Esto facilitará la tarea de utilizarlo en el taller, en casa, en el trabajo ... con solo configurar una sola vez las posibles redes que tendrá disponibles en algún momento.
+
+En este caso no es una libreria instalable de forma individual, ya está instalada como parte del soporte para ESP8266, por lo que para su uso sólo será necesario incluir la cabecera.
+
+| Libreria | Enlaces de interés | | | |
+| :----- | :-----: | :-----: | :-----: | :-----: |
+| `ESP8266WiFiMulti` de *Markus Sattler* | [<i class="fa fa-link" style="color:#FA023C"></i> Repositorio (ESP8266WiFiMulti.h)](https://github.com/esp8266/Arduino/blob/2.5.0/libraries/ESP8266WiFi/src/ESP8266WiFiMulti.h) | Documentado en ejemplos | [<i class="fa fa-link" style="color:#FA023C"></i> Ejemplos](https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/station-examples.html#introduction) | [<i class="fa fa-link" style="color:#FA023C"></i> Código fuente](https://github.com/esp8266/Arduino/blob/2.5.0/libraries/ESP8266WiFi/src/ESP8266WiFiMulti.cpp) |
+
+#### Ejemplo funcional
+
+```C
+/* Include required headers and/or libraries */
+#include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+
+/* Instantiate a ESP8266WiFiMulti object called WiFiMulti */
+ESP8266WiFiMulti WiFiMulti;
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Comment the following line to disable debug output */
+  Serial.setDebugOutput(true);
+
+  /* Welcome message! Useful as a control point */
+  Serial.printf("Ahoy! ESP8266 here!\n---\n");
+
+  /* Add your home/personal wifi here */
+  WiFiMulti.addAP("personal-wifi", "the_password");
+
+  /* If not found, will try to connect to this one */
+  WiFiMulti.addAP("IoTesla",       "euroavia2019");
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Pass the control to WifiMulti so it can check the network */
+  switch (WiFiMulti.run())
+  {
+    /* 'WiFiMulti.run()' returns a status code.
+     * The following switch..case shows all the valid cases for didactic
+     * purposes, but tipically is only checked one or two cases, if so.
+     */
+
+    case WL_IDLE_STATUS:
+      Serial.printf("Returned WL_IDLE_STATUS\n");
+      break;
+
+    case WL_NO_SSID_AVAIL:
+      Serial.printf("Returned WL_NO_SSID_AVAIL\n");
+      break;
+
+    case WL_SCAN_COMPLETED:
+      Serial.printf("Returned WL_SCAN_COMPLETED\n");
+      break;
+
+    case WL_CONNECTED:
+      Serial.printf("Returned WL_CONNECTED\n");
+      break;
+
+    case WL_CONNECT_FAILED:
+      Serial.printf("Returned WL_CONNECT_FAILED\n");
+      break;
+
+    case WL_CONNECTION_LOST:
+      Serial.printf("Returned WL_CONNECTION_LOST\n");
+      break;
+
+    case WL_DISCONNECTED:
+      Serial.printf("Returned WL_DISCONNECTED\n");
+      break;
+  }
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+```
+
+#### Salida esperada
+
+```text
+Ahoy! ESP8266 here!
+---
+scandone
+Returned WL_DISCONNECTED
+Returned WL_NO_SSID_AVAIL
+Returned WL_NO_SSID_AVAIL
+Returned WL_NO_SSID_AVAIL
+Returned WL_NO_SSID_AVAIL
+scandone
+scandone
+state: 0 -> 2 (b0)
+state: 2 -> 3 (0)
+state: 3 -> 5 (10)
+add 0
+aid 3
+cnt 
+
+connected with IoTesla, channel 9
+dhcp client start...
+ip:192.168.1.245,mask:255.255.255.0,gw:192.168.1.1
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+Returned WL_CONNECTED
+```
