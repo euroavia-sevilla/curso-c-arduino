@@ -28,5 +28,10 @@ APP_SCRIPT_NAME="$(basename "$(readlink -f "$0")")"
 echo "APP_PATH .........: ${APP_PATH}"
 echo "APP_SCRIPT_NAME ..: ${APP_SCRIPT_NAME}"
 
-arduino-cli compile --verbose --warnings all --fqbn esp8266:esp8266:d1_mini "$1"
+# More verbose:  --show-properties
+arduino-cli compile \
+            --verbose \
+            --warnings all \
+            --fqbn esp8266:esp8266:d1_mini:xtal=80,vt=flash,exception=disabled,eesz=4M3M,ip=lm2f,dbg=Disabled,lvl=HTTP_SERVER,wipe=all,baud=921600 \
+            "$1"
 arduino-cli upload -p "$2" --fqbn esp8266:esp8266:d1_mini "$1"

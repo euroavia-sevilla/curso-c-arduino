@@ -1,2 +1,4 @@
 *.sublime-workspace
 workshop_site
+*.bin
+*.elf
