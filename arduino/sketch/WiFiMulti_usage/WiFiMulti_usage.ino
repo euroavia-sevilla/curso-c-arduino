@@ -19,6 +19,9 @@ void setup()
   /* Welcome message! Useful as a control point */
   Serial.printf("Ahoy! ESP8266 here!\n---\n");
 
+  /* Ensure to work as Station (disables internal AP) */
+  WiFi.mode(WIFI_STA);
+
   /* Add your home/personal wifi here */
   WiFiMulti.addAP("personal-wifi", "the_password");
 

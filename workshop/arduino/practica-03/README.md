@@ -618,11 +618,15 @@ void loop()
   Serial.printf("Response received:\n");
 
   /* Print data while still available (pay attention to %s format) */
+  size_t rcv_bytes = 0;
   while (TCPClient.available())
   {
-    Serial.printf("Printing %i bytes ---\n%.*s\n---\n",
-                  TCPClient.read(rcv_data, RCV_DATA_MAX),
-                  RCV_DATA_MAX, rcv_data);
+    while (rcv_bytes = TCPClient.read(rcv_data, RCV_DATA_MAX))
+    {
+      Serial.printf("Printing %i bytes ---\n%.*s\n---\n",
+                    rcv_bytes,
+                    rcv_bytes, rcv_data);
+    }
   }
 
   /* Wrap-up and go! It's finished! */
@@ -729,6 +733,9 @@ void setup()
 
   /* Welcome message! Useful as a control point */
   Serial.printf("Ahoy! ESP8266 here!\n---\n");
+
+  /* Ensure to work as Station (disables internal AP) */
+  WiFi.mode(WIFI_STA);
 
   /* Add your home/personal wifi here */
   WiFiMulti.addAP("personal-wifi", "the_password");

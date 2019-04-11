@@ -11,7 +11,9 @@ nav:
   - Introducción:
     - introduccion/README.md
     - introduccion/carpeta-de-trabajo/README.md
-  - C: lenguaje-c/README.md
+  - C:
+    - lenguaje-c/README.md
+    - lenguaje-c/punteros/README.md
   - hardware/README.md
   - Arduino:
     - arduino/README.md
