@@ -82,7 +82,7 @@
                         
                             
 <li >
-    <a href="../../introduccion/">Index</a>
+    <a href="../../introduccion/">Introducción</a>
 </li>
 
                         
@@ -97,8 +97,23 @@
                 
                 
                 
-                    <li >
-                        <a href="../../lenguaje-c/">C</a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">C <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../lenguaje-c/">Lenguaje C y C99</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../lenguaje-c/punteros/">Punteros</a>
+</li>
+
+                        
+                        </ul>
                     </li>
                 
                 
@@ -211,7 +226,6 @@
                 <li class="third-level"><a href="#spiffs-ficheros-en-memoria-interna">SPIFFS: Ficheros en memoria interna</a></li>
                 <li class="third-level"><a href="#wifi-conexion-a-red-y-peticion-http-usando-tcp">WiFi: Conexión a red y petición HTTP usando TCP</a></li>
                 <li class="third-level"><a href="#wifimulti-conectividad-entre-redes">WiFiMulti: Conectividad entre redes</a></li>
-                <li class="third-level"><a href="#template">Template</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
@@ -846,11 +860,15 @@ void loop()
   Serial.printf(&quot;Response received:\n&quot;);
 
   /* Print data while still available (pay attention to %s format) */
+  size_t rcv_bytes = 0;
   while (TCPClient.available())
   {
-    Serial.printf(&quot;Printing %i bytes ---\n%.*s\n---\n&quot;,
-                  TCPClient.read(rcv_data, RCV_DATA_MAX),
-                  RCV_DATA_MAX, rcv_data);
+    while (rcv_bytes = TCPClient.read(rcv_data, RCV_DATA_MAX))
+    {
+      Serial.printf(&quot;Printing %i bytes ---\n%.*s\n---\n&quot;,
+                    rcv_bytes,
+                    rcv_bytes, rcv_data);
+    }
   }
 
   /* Wrap-up and go! It's finished! */
@@ -959,6 +977,9 @@ void setup()
   /* Welcome message! Useful as a control point */
   Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
 
+  /* Ensure to work as Station (disables internal AP) */
+  WiFi.mode(WIFI_STA);
+
   /* Add your home/personal wifi here */
   WiFiMulti.addAP(&quot;personal-wifi&quot;, &quot;the_password&quot;);
 
@@ -1041,35 +1062,7 @@ Returned WL_CONNECTED
 Returned WL_CONNECTED
 Returned WL_CONNECTED
 Returned WL_CONNECTED
-</code></pre>
-
-<h3 id="template">Template</h3>
-<h4 id="resumen_5">Resumen</h4>
-<table>
-<thead>
-<tr>
-<th align="left">Libreria</th>
-<th align="center">Enlaces de interés</th>
-<th align="center"></th>
-<th align="center"></th>
-<th align="center"></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><code>NAME</code> de <em>AUTHOR</em></td>
-<td align="center"><a href=""><i class="fa fa-link" style="color:#FA023C"></i> Repositorio</a></td>
-<td align="center"><a href=""><i class="fa fa-link" style="color:#FA023C"></i> Documentación</a></td>
-<td align="center"><a href=""><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
-<td align="center"><a href=""><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
-</tr>
-</tbody>
-</table>
-<h4 id="ejemplo-funcional_5">Ejemplo funcional</h4>
-<pre><code class="C"></code></pre>
-
-<h4 id="salida-esperada_5">Salida esperada</h4>
-<pre><code class="text"></code></pre></div>
+</code></pre></div>
         
         
     </div>
