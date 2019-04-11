@@ -16,7 +16,7 @@ void setup()
   Serial.begin(115200);
 
   /* Join I2C bus and set it to 400 kHz */
-  Wire.begin();
+  Wire.begin(0, 2);
   Wire.setClock(400000);
 
   /* Address the sensor */

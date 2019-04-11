@@ -59,7 +59,7 @@ Como se indica, se recomienda primero ver la parte específica y luego la genera
 
 `Wire.begin()` existe en ambas librerias y se llaman de forma diferente, lo que puede dar lugar a fallos y confusión aunque el programa sea totalmente correcto.
 
-Lo correcto será usar `Wire.begin()` como dicta la libreria del ESP8266: [Wire.begin(SDA_pin, SCL_pin)](https://arduino-esp8266.readthedocs.io/en/latest/libraries.html#i2c-wire-library). Esto arrancará el periférico I2C en modo maestro usando concrétamente esos pines.
+Lo correcto será usar `Wire.begin(0, 2)` como dicta la libreria del ESP8266: [Wire.begin(SDA_pin, SCL_pin)](https://arduino-esp8266.readthedocs.io/en/latest/libraries.html#i2c-wire-library). Esto arrancará el periférico I2C en modo maestro usando concrétamente esos pines.
 
 Como en la libreria del ESP8266 no aparece ninguna otra referencia al bus I2C, el resto de funciones se usarán como dicta la libreria `Wire` de Arduino.
 
