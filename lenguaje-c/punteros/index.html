@@ -217,14 +217,15 @@
         <li class="first-level active"><a href="#punteros">Punteros</a></li>
             <li class="second-level"><a href="#taller">Taller</a></li>
                 
-                <li class="third-level"><a href="#ejemplo-1">Ejemplo 1</a></li>
+                <li class="third-level"><a href="#ejemplo-1-punteros-simples">Ejemplo 1: Punteros simples</a></li>
+                <li class="third-level"><a href="#ejemplo-2-mezclando-signos-y-tipos">Ejemplo 2: Mezclando signos y tipos</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
 
 <h1 id="punteros">Punteros</h1>
 <h2 id="taller">Taller</h2>
-<h3 id="ejemplo-1">Ejemplo 1</h3>
+<h3 id="ejemplo-1-punteros-simples">Ejemplo 1: Punteros simples</h3>
 <p>En este ejemplo se usan de forma básica los punteros de C. Se verá como se crean y asignan, como se reasignan diréctamente o mediante aritmética simple.</p>
 <p>Este ejemplo mostrará una información y se bloqueará. Para poder volver a verla hay que resetear la placa pulsando brevemente el botón de reset lateral.</p>
 <pre><code class="C">/* Include required headers and/or libraries */
@@ -346,6 +347,141 @@ Checking variables assignments:
    - Pointed by pt_u8 ..:   2 @ 0x3FFFFF61
    - Pointed by pt_i8 ..:  -2 @ 0x3FFFFF59
    - Pointed by pt_ch ..:   b @ 0x3FFFFF51
+Locking now
+</code></pre>
+
+<h3 id="ejemplo-2-mezclando-signos-y-tipos">Ejemplo 2: Mezclando signos y tipos</h3>
+<p>En este ejemplo se muestran todas las direcciones en forma de tabla y se accede a unos elementos interpretandolos de forma diferente al tipo que los define, a traves de su dirección (usando punteros).</p>
+<p>Este ejemplo mostrará una información y se bloqueará. Para poder volver a verla hay que resetear la placa pulsando brevemente el botón de reset lateral.</p>
+<pre><code class="C">/* Include required headers and/or libraries */
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n---\n&quot;);
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Create a few arrays */
+  uint8_t  arr_u8[8] = {  1,   2,   3,   4,   5,   6,   7,   8  };
+  int8_t   arr_i8[8] = { -1,  -2,  -3,  -4,  -5,  -6,  -7,  -8  };
+  char     arr_ch[8] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
+
+  /* 
+   * Print a table of addresses
+   */
+
+  /* Helper variables */
+  uint8_t idx0       = 0;
+  Serial.printf(&quot;Address of each array member:\n&quot;);
+  Serial.printf(&quot;\n&quot;);
+
+  /* Table: Header */
+  Serial.printf(&quot; Type    &quot;);
+  for (idx0 = 0; idx0 &lt; 8; idx0++)
+  {
+    Serial.printf(&quot;| Index nr.%u &quot;, idx0);
+  }
+  Serial.printf(&quot;\n&quot;);
+
+  /* Table: Separator */
+  Serial.printf(&quot;---------&quot;);
+  for (idx0 = 0; idx0 &lt; 8; idx0++)
+  {
+    Serial.printf(&quot;+------------&quot;);
+  }
+  Serial.printf(&quot;\n&quot;);
+
+  /* Table: uint8_t row */
+  Serial.printf(&quot; uint8_t &quot;);
+  for (idx0 = 0; idx0 &lt; 8; idx0++)
+  {
+    Serial.printf(&quot;| 0x%08X &quot;, &amp;arr_u8[idx0]);
+  }
+  Serial.printf(&quot;\n&quot;);
+
+  /* Table: int8_t row */
+  Serial.printf(&quot;  int8_t &quot;);
+  for (idx0 = 0; idx0 &lt; 8; idx0++)
+  {
+    Serial.printf(&quot;| 0x%08X &quot;, &amp;arr_i8[idx0]);
+  }
+  Serial.printf(&quot;\n&quot;);
+
+  /* Table: char row */
+  Serial.printf(&quot;    char &quot;);
+  for (idx0 = 0; idx0 &lt; 8; idx0++)
+  {
+    Serial.printf(&quot;| 0x%08X &quot;, &amp;arr_ch[idx0]);
+  }
+  Serial.printf(&quot;\n&quot;);
+
+  /* Create a few simple (single) pointers */
+  uint8_t  *pt_u8    = &amp;arr_u8[7];
+  int8_t   *pt_i8    = &amp;arr_i8[7];
+  char     *pt_ch    = &amp;arr_ch[7];
+  uint32_t *pt_u32   = NULL;
+
+  /* Check some variables assignments */
+  Serial.printf(&quot;\n&quot;);
+  Serial.printf(&quot;Checking variables assignments:\n&quot;);
+  Serial.printf(&quot; - Indirect-access (using pointers):\n&quot;);
+  Serial.printf(&quot;   - Pointed by pt_u8 ..: %8u [0x%08X]\n&quot;, *pt_u8, *pt_u8);
+  Serial.printf(&quot;   - Pointed by pt_i8 ..: %8i [0x%08X]\n&quot;, *pt_i8, *pt_i8);
+  Serial.printf(&quot;   - Pointed by pt_ch ..: %8c [0x%08X]\n&quot;, *pt_ch, *pt_ch);
+
+  /* What if we re-read an address thinking it has a different sign? */
+  pt_u8 = (uint8_t *)pt_i8;
+  Serial.printf(&quot; - A uint8_t reading data from a negative int8_t:\n&quot;);
+  Serial.printf(&quot;   - Pointed by pt_u8 ..: %8u [0x%08X]\n&quot;, *pt_u8, *pt_u8);
+
+  /* What if we re-read it again, but thinking on different size? */
+  pt_u32 = (uint32_t *)pt_i8;
+  Serial.printf(&quot; - A uint32_t reading data from a negative int8_t:\n&quot;);
+  Serial.printf(&quot;   - Pointed by pt_u32 .: %8u [0x%08X]\n&quot;, *pt_u32, *pt_u32);
+
+  /* ~~ o ~~ */
+
+  /* Process is locked until reset is performed */
+  Serial.printf(&quot;Locking now\n&quot;);
+  while (true)
+  {
+    /* Ensure other tasks are working (avoid WDT reset) */
+    yield();
+  }
+}
+</code></pre>
+
+<h4 id="salida-esperada_1">Salida esperada</h4>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+Address of each array member:
+
+ Type    | Index nr.0 | Index nr.1 | Index nr.2 | Index nr.3 | Index nr.4 | Index nr.5 | Index nr.6 | Index nr.7 
+---------+------------+------------+------------+------------+------------+------------+------------+------------
+ uint8_t | 0x3FFFFF70 | 0x3FFFFF71 | 0x3FFFFF72 | 0x3FFFFF73 | 0x3FFFFF74 | 0x3FFFFF75 | 0x3FFFFF76 | 0x3FFFFF77 
+  int8_t | 0x3FFFFF68 | 0x3FFFFF69 | 0x3FFFFF6A | 0x3FFFFF6B | 0x3FFFFF6C | 0x3FFFFF6D | 0x3FFFFF6E | 0x3FFFFF6F 
+    char | 0x3FFFFF60 | 0x3FFFFF61 | 0x3FFFFF62 | 0x3FFFFF63 | 0x3FFFFF64 | 0x3FFFFF65 | 0x3FFFFF66 | 0x3FFFFF67 
+
+Checking variables assignments:
+ - Indirect-access (using pointers):
+   - Pointed by pt_u8 ..:        8 [0x00000008]
+   - Pointed by pt_i8 ..:       -8 [0xFFFFFFF8]
+   - Pointed by pt_ch ..:        h [0x00000068]
+ - A uint8_t reading data from a negative int8_t:
+   - Pointed by pt_u8 ..:      248 [0x000000F8]
+ - A uint32_t reading data from a negative int8_t:
+   - Pointed by pt_u32 .: 50463224 [0x030201F8]
 Locking now
 </code></pre></div>
         
