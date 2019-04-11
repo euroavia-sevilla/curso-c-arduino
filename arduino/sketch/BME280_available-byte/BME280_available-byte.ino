@@ -5,7 +5,7 @@
 void setup()
 {
   /* Join i2c bus (address optional for master) */
-  Wire.begin();
+  Wire.begin(0, 2);
 
   /* start serial for output */
   Serial.begin(115200);
