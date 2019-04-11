@@ -274,7 +274,7 @@
 </ol>
 <p>Como se indica, se recomienda primero ver la parte específica y luego la general, ya que tendrá preferencia en el momento de su uso. Esto pasa con la funcion <code>Wire.begin()</code>:</p>
 <p><code>Wire.begin()</code> existe en ambas librerias y se llaman de forma diferente, lo que puede dar lugar a fallos y confusión aunque el programa sea totalmente correcto.</p>
-<p>Lo correcto será usar <code>Wire.begin()</code> como dicta la libreria del ESP8266: <a href="https://arduino-esp8266.readthedocs.io/en/latest/libraries.html#i2c-wire-library">Wire.begin(SDA_pin, SCL_pin)</a>. Esto arrancará el periférico I2C en modo maestro usando concrétamente esos pines.</p>
+<p>Lo correcto será usar <code>Wire.begin(0, 2)</code> como dicta la libreria del ESP8266: <a href="https://arduino-esp8266.readthedocs.io/en/latest/libraries.html#i2c-wire-library">Wire.begin(SDA_pin, SCL_pin)</a>. Esto arrancará el periférico I2C en modo maestro usando concrétamente esos pines.</p>
 <p>Como en la libreria del ESP8266 no aparece ninguna otra referencia al bus I2C, el resto de funciones se usarán como dicta la libreria <code>Wire</code> de Arduino.</p>
 <h2 id="practica">Práctica</h2>
 <p>En esta práctica se busca conseguir una comunicación a traves del bus I2C con el dispositivo <a href="../../hardware/#sensor-bme280-temperatura-humedad-y-presion"><i class="fa fa-link" style="color:#FA023C"></i> BME280</a> acoplado al D1 Mini.</p>
