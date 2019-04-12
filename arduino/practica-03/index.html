@@ -226,6 +226,8 @@
                 <li class="third-level"><a href="#spiffs-ficheros-en-memoria-interna">SPIFFS: Ficheros en memoria interna</a></li>
                 <li class="third-level"><a href="#wifi-conexion-a-red-y-peticion-http-usando-tcp">WiFi: Conexión a red y petición HTTP usando TCP</a></li>
                 <li class="third-level"><a href="#wifimulti-conectividad-entre-redes">WiFiMulti: Conectividad entre redes</a></li>
+                <li class="third-level"><a href="#pubsubclient-cliente-mqtt-i">PubSubClient: Cliente MQTT (I)</a></li>
+                <li class="third-level"><a href="#mqtt-cliente-mqtt-ii">MQTT: Cliente MQTT (II)</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
@@ -1062,6 +1064,599 @@ Returned WL_CONNECTED
 Returned WL_CONNECTED
 Returned WL_CONNECTED
 Returned WL_CONNECTED
+</code></pre>
+
+<h3 id="pubsubclient-cliente-mqtt-i">PubSubClient: Cliente MQTT (I)</h3>
+<p>Se pretende conseguir un cliente MQTT estable y con un indice de fallos lo mas próximo a 0% posible. Se ponen a prueba dos librerias ampliamente aceptadas en la comunidad Arduino: <em>PubSubClient</em> y <em>MQTT</em>.</p>
+<p>PubSubClient permite utilizar MQTT de una forma sencilla, permitiendo seleccionar entre el protocolo 3.1 o 3.1.1. No permite conexiones seguras y sus publicaciones se enviarán con QoS = 0, por lo que no habrá confirmación de entrega.</p>
+<p>Está muy aceptada por la comunidad, tiene un buen soporte y una extensa documentación, aparte de muchos ejemplos funcionales. En las pruebas ha funcionado a la perfección.</p>
+<blockquote>
+<p><strong>NOTA:</strong> Aunque no se ha encontrado una documentación mas amplia donde se explique con detalle, es obligatorio incluir un retraso tras el loop del cliente, ya que de lo contrario los envios no funcionarán.</p>
+<p>En el ejemplo se incluye de la siguiente manera:</p>
+</blockquote>
+<pre><code class="C">...
+    mqttClient.loop();
+    /* This delay fixes some issues with WiFi stability and data loss */
+    delay(10);
+...
+</code></pre>
+
+<p>Se instala desde el gestor de librerias interno de Arduino.</p>
+<h4 id="resumen_5">Resumen</h4>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>PubSubClient</code> de <em>Nick O&rsquo;Leary</em></td>
+<td align="center"><a href="https://github.com/knolleary/pubsubclient"><i class="fa fa-link" style="color:#FA023C"></i> Repositorio</a></td>
+<td align="center"><a href="https://pubsubclient.knolleary.net/index.html"><i class="fa fa-link" style="color:#FA023C"></i> Documentación</a></td>
+<td align="center"><a href="https://github.com/knolleary/pubsubclient/tree/master/examples"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
+<td align="center"><a href="https://github.com/knolleary/pubsubclient/tree/master/src"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional_5">Ejemplo funcional</h4>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;stdio.h&gt;
+#include &lt;ESP8266WiFi.h&gt;
+#include &lt;ESP8266WiFiMulti.h&gt;
+/* https://github.com/knolleary/pubsubclient */
+#include &lt;PubSubClient.h&gt;
+
+/* This allows 'ESP.getVcc()' to be used */
+ADC_MODE(ADC_VCC);
+
+/* This block allows to be configured outside this code, but will use
+ * the following information as default in case is not */
+#if !defined(STASSID)
+  #define STASSID &quot;IoTesla&quot;
+  #define STAPSK  &quot;euroavia2019&quot;
+#endif
+
+/* Define the MQTT host and port to connect to */
+const char    *mqtt_host     = &quot;192.168.1.1&quot;;
+const uint16_t mqtt_port     = 1883;
+const char    *mqtt_user     = &quot;tc_d1_0000&quot;;
+const char    *mqtt_pass     = &quot;euroavia2019&quot;;
+
+/* Defined topics for IoTesla */
+const char *topic_list[3] =
+{
+  /* euroavia-pool/# */
+  &quot;euroavia-pool/#&quot;,
+  /* euroavia-pool/USERNAME/# */
+  &quot;euroavia-pool/%s/%s&quot;,
+  /* euroavia-devices/USERNAME/# */
+  &quot;euroavia-devices/%s/%s&quot;
+};
+#define PUBLIC_SUSCRIBE 0
+#define PUBLIC_PUBLISH  1
+#define PRIVATE_USAGE   2
+
+/* Instantiate the required objects */
+ESP8266WiFiMulti WiFiMulti;
+WiFiClient espClient;
+PubSubClient mqttClient(mqtt_host, mqtt_port, espClient);
+
+/* Data holder send/receive data */
+#define BUF_DATA_MAX 1024
+char buf_data[BUF_DATA_MAX] = { 0x00 };
+
+/* Used to count the time */
+unsigned long millis_now = 0;
+unsigned long millis_last = 0;
+
+/* A basic sensor data structure */
+struct sensor_data
+{
+  float temperature;
+  float humidity;
+  float pressure;
+  float altitude;
+  float supply_vcc;
+};
+
+/* Create a variable to hold the sensor data */
+struct sensor_data sdata;
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n&quot;
+                &quot;---\n&quot;
+                &quot;&gt; Testing: knolleary's PubSubClient.h library\n&quot;
+                &quot;---\n&quot;
+                );
+
+  /* Ensure to work as Station (disables internal AP) */
+  WiFi.mode(WIFI_STA);
+
+  /* Add your home/personal wifi here */
+  WiFiMulti.addAP(&quot;personal-wifi&quot;, &quot;the_password&quot;);
+
+  /* If not found, will try to connect to this one */
+  WiFiMulti.addAP(&quot;IoTesla&quot;,       &quot;euroavia2019&quot;);
+}
+
+/*
+ * This function will fill a structure with sensor data
+ * For this example, is just fake data
+ * - Returns 0 if OK. Non 0 for error or warning
+ */
+int get_sensor_data(struct sensor_data *sdata)
+{
+  sdata-&gt;temperature = ( 2000.0 + random(1000))/100;
+  sdata-&gt;humidity    = ( 4000.0 + random(2000))/100;
+  sdata-&gt;pressure    = (10000.0 + random(5000))/100;
+  sdata-&gt;altitude    = (20000.0 + random(10000))/100;
+  sdata-&gt;supply_vcc  = 1.0 * ESP.getVcc();
+  return 0;
+}
+
+/*
+ * This function takes a structure with sensor data and upload
+ * it to MQTT broker
+ * - Returns 0 if OK. Non 0 for error or warning
+ */
+int upload_sensor_data(struct sensor_data *sdata)
+{
+  static int res;
+
+  /* Compose a JSON string with sensor data */
+  snprintf(buf_data, BUF_DATA_MAX,
+           &quot;{&quot;
+           &quot; tmp: %.2f,&quot;
+           &quot; hum: %.2f,&quot;
+           &quot; prs: %.2f,&quot;
+           &quot; alt: %.2f,&quot;
+           &quot; vcc: %.2f &quot;
+           &quot;}&quot;,
+           sdata-&gt;temperature,
+           sdata-&gt;humidity,
+           sdata-&gt;pressure,
+           sdata-&gt;altitude,
+           sdata-&gt;supply_vcc
+           );
+  res = mqttClient.publish(get_topic_name(PUBLIC_PUBLISH, &quot;sensors&quot;), buf_data);
+  Serial.printf(&quot;Sensor data published ... %s\n&quot;, (res)?&quot;OK&quot;:&quot;FAIL&quot;);
+
+  /* Opposite interface here, 1 for OK is translated to 0 for OK */
+  return res?0:1;
+}
+
+/*
+ * Build a topic string and return a pointer to it
+ */
+char *get_topic_name(uint8_t topic_id, char *endpoint)
+{
+  /* Topic name holder */
+  #define TOPIC_NAME_MAX 256
+  static char topic_name[TOPIC_NAME_MAX] = { 0x00 };
+
+  /* Select topic specifics */
+  switch (topic_id)
+  {
+    /* No variable sustitution needed */
+    case PUBLIC_SUSCRIBE:
+      snprintf(topic_name, TOPIC_NAME_MAX, topic_list[topic_id]);
+      break;
+
+    /* Need 2 variable sustitutitons */
+    case PUBLIC_PUBLISH:
+    case PRIVATE_USAGE:
+      snprintf(topic_name, TOPIC_NAME_MAX, topic_list[topic_id],
+               mqtt_user, endpoint);
+      break;
+
+    /* Dunno what ur saying */
+    default:
+      /* Set an empty string as result */
+      topic_name[0] = 0x00;
+      break;
+  }
+
+  /* Let's go! */
+  return topic_name;
+}
+
+/*
+ * This function is used to make a new connection to MQTT broker
+ */
+void mqtt_connect()
+{
+  /* Non-stop retries */
+  while (!mqttClient.connected())
+  {
+    /* Use the board+flash IDs as identifier */
+    snprintf(buf_data, BUF_DATA_MAX,
+             &quot;IoTesla-%08X-%08X\n&quot;,
+             ESP.getChipId(), ESP.getFlashChipId());
+
+    /* Connect to broker */
+    Serial.printf(&quot;Connecting to MQTT broker:\n&quot;
+                  &quot; - username ..: %s\n&quot;
+                  &quot; - client ID .: %s\n&quot;,
+                  mqtt_user, buf_data);
+    if (mqttClient.connect(buf_data, mqtt_user, mqtt_pass))
+    {
+      Serial.printf(&quot;Connected ... announce to broker\n&quot;);
+      mqttClient.publish(get_topic_name(PUBLIC_PUBLISH, &quot;announce&quot;), buf_data);
+    }
+    else
+    {
+      /* Wait 5 seconds before retry */
+      delay(5000);
+    }
+  }
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Are we connected */
+  if (WiFiMulti.run() == WL_CONNECTED)
+  {
+    mqttClient.loop();
+    /* This delay fixes some issues with WiFi stability and data loss */
+    delay(10);
+
+    /* Maintain a connection with the MQTT broker */
+    if (!mqttClient.connected())
+    {
+      mqtt_connect();
+    }
+
+    /* Get the sensor data into our structure */
+    if (get_sensor_data(&amp;sdata))
+    {
+      Serial.printf(&quot;Error while reading sensors data\n&quot;);
+      return;
+    }
+
+    /* If more than 2.5s passed since last message, sent another one */
+    millis_now = millis();
+    if (millis_now - millis_last &gt; 2500)
+    {
+      /* Refresh timer */
+      millis_last = millis_now;
+
+      /* Upload structure data to MQTT broker */
+      if (upload_sensor_data(&amp;sdata))
+      {
+        Serial.printf(&quot;Error while uploading sensors data\n&quot;);
+        return;
+      }
+    }
+  }
+}
+</code></pre>
+
+<h4 id="salida-esperada_5">Salida esperada</h4>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+&gt; Testing: knolleary's PubSubClient.h library
+---
+Connecting to MQTT broker:
+ - username ..: tc_d1_0000
+ - client ID .: IoTesla-007FEA27-001640EF
+
+Connected ... announce to broker
+Sensor data published ... OK
+Sensor data published ... OK
+Sensor data published ... OK
+</code></pre>
+
+<h3 id="mqtt-cliente-mqtt-ii">MQTT: Cliente MQTT (II)</h3>
+<p>Esta es la segunda librería bajo prueba, teniendo tambien un gran soporte un desarrollo muy activo.</p>
+<p>Permite conexiones seguras y mensajes con QoS superior a 0. Todo esto aportará al tamaño final del binario, pero en caso de necesitarse, se puede usar.</p>
+<p>Funciona a la perfección y tiene una API casi idéntica a la anterior libtería, por lo que la migración entre ellas es muy simple.</p>
+<blockquote>
+<p><strong>NOTA:</strong> Aunque no se ha encontrado una documentación mas amplia donde se explique con detalle, es obligatorio incluir un retraso tras el loop del cliente, ya que de lo contrario los envios no funcionarán.</p>
+<p>En el ejemplo se incluye de la siguiente manera:</p>
+</blockquote>
+<pre><code class="C">...
+    mqttClient.loop();
+    /* This delay fixes some issues with WiFi stability and data loss */
+    delay(10);
+...
+</code></pre>
+
+<p>Se instala desde el gestor de librerias interno de Arduino.</p>
+<h4 id="resumen_6">Resumen</h4>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>MQTT</code> de <em>Joel Gaehwiler</em></td>
+<td align="center"><a href="https://github.com/256dpi/arduino-mqtt"><i class="fa fa-link" style="color:#FA023C"></i> Repositorio</a></td>
+<td align="center">Documentado en web y ejemplos</td>
+<td align="center"><a href="https://github.com/256dpi/arduino-mqtt/tree/master/examples"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
+<td align="center"><a href="https://github.com/256dpi/arduino-mqtt/tree/master/src"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional_6">Ejemplo funcional</h4>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;stdio.h&gt;
+#include &lt;ESP8266WiFi.h&gt;
+#include &lt;ESP8266WiFiMulti.h&gt;
+/* https://github.com/256dpi/arduino-mqtt */
+#include &lt;MQTT.h&gt;
+
+/* This allows 'ESP.getVcc()' to be used */
+ADC_MODE(ADC_VCC);
+
+/* This block allows to be configured outside this code, but will use
+ * the following information as default in case is not */
+#if !defined(STASSID)
+  #define STASSID &quot;IoTesla&quot;
+  #define STAPSK  &quot;euroavia2019&quot;
+#endif
+
+/* Define the MQTT host and port to connect to */
+const char    *mqtt_host     = &quot;192.168.1.1&quot;;
+const uint16_t mqtt_port     = 1883;
+const char    *mqtt_user     = &quot;tc_d1_0000&quot;;
+const char    *mqtt_pass     = &quot;euroavia2019&quot;;
+
+/* Defined topics for IoTesla */
+const char *topic_list[3] =
+{
+  /* euroavia-pool/# */
+  &quot;euroavia-pool/#&quot;,
+  /* euroavia-pool/USERNAME/# */
+  &quot;euroavia-pool/%s/%s&quot;,
+  /* euroavia-devices/USERNAME/# */
+  &quot;euroavia-devices/%s/%s&quot;
+};
+#define PUBLIC_SUSCRIBE 0
+#define PUBLIC_PUBLISH  1
+#define PRIVATE_USAGE   2
+
+/* Instantiate the required objects */
+ESP8266WiFiMulti WiFiMulti;
+WiFiClient espClient;
+MQTTClient mqttClient;
+
+/* Data holder send/receive data */
+#define BUF_DATA_MAX 1024
+char buf_data[BUF_DATA_MAX] = { 0x00 };
+
+/* Used to count the time */
+unsigned long millis_now = 0;
+unsigned long millis_last = 0;
+
+/* A basic sensor data structure */
+struct sensor_data
+{
+  float temperature;
+  float humidity;
+  float pressure;
+  float altitude;
+  float supply_vcc;
+};
+
+/* Create a variable to hold the sensor data */
+struct sensor_data sdata;
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n&quot;
+                &quot;---\n&quot;
+                &quot;&gt; Testing: 256dpi's MQTT.h library\n&quot;
+                &quot;---\n&quot;
+                );
+
+  /* Ensure to work as Station (disables internal AP) */
+  WiFi.mode(WIFI_STA);
+
+  /* Add your home/personal wifi here */
+  WiFiMulti.addAP(&quot;personal-wifi&quot;, &quot;the_password&quot;);
+
+  /* If not found, will try to connect to this one */
+  WiFiMulti.addAP(&quot;IoTesla&quot;,       &quot;euroavia2019&quot;);
+  mqttClient.begin(mqtt_host, mqtt_port, espClient);
+}
+
+/*
+ * This function will fill a structure with sensor data
+ * For this example, is just fake data
+ * - Returns 0 if OK. Non 0 for error or warning
+ */
+int get_sensor_data(struct sensor_data *sdata)
+{
+  sdata-&gt;temperature = ( 2000.0 + random(1000))/100;
+  sdata-&gt;humidity    = ( 4000.0 + random(2000))/100;
+  sdata-&gt;pressure    = (10000.0 + random(5000))/100;
+  sdata-&gt;altitude    = (20000.0 + random(10000))/100;
+  sdata-&gt;supply_vcc  = 1.0 * ESP.getVcc();
+  return 0;
+}
+
+/*
+ * This function takes a structure with sensor data and upload
+ * it to MQTT broker
+ * - Returns 0 if OK. Non 0 for error or warning
+ */
+int upload_sensor_data(struct sensor_data *sdata)
+{
+  static int res;
+
+  /* Compose a JSON string with sensor data */
+  snprintf(buf_data, BUF_DATA_MAX,
+           &quot;{&quot;
+           &quot; tmp: %.2f,&quot;
+           &quot; hum: %.2f,&quot;
+           &quot; prs: %.2f,&quot;
+           &quot; alt: %.2f,&quot;
+           &quot; vcc: %.2f &quot;
+           &quot;}&quot;,
+           sdata-&gt;temperature,
+           sdata-&gt;humidity,
+           sdata-&gt;pressure,
+           sdata-&gt;altitude,
+           sdata-&gt;supply_vcc
+           );
+  res = mqttClient.publish(get_topic_name(PUBLIC_PUBLISH, &quot;sensors&quot;), buf_data);
+  Serial.printf(&quot;Sensor data published ... %s\n&quot;, (res)?&quot;OK&quot;:&quot;FAIL&quot;);
+
+  /* Opposite interface here, 1 for OK is translated to 0 for OK */
+  return res?0:1;
+}
+
+/*
+ * Build a topic string and return a pointer to it
+ */
+char *get_topic_name(uint8_t topic_id, char *endpoint)
+{
+  /* Topic name holder */
+  #define TOPIC_NAME_MAX 256
+  static char topic_name[TOPIC_NAME_MAX] = { 0x00 };
+
+  /* Select topic specifics */
+  switch (topic_id)
+  {
+    /* No variable sustitution needed */
+    case PUBLIC_SUSCRIBE:
+      snprintf(topic_name, TOPIC_NAME_MAX, topic_list[topic_id]);
+      break;
+
+    /* Need 2 variable sustitutitons */
+    case PUBLIC_PUBLISH:
+    case PRIVATE_USAGE:
+      snprintf(topic_name, TOPIC_NAME_MAX, topic_list[topic_id],
+               mqtt_user, endpoint);
+      break;
+
+    /* Dunno what ur saying */
+    default:
+      /* Set an empty string as result */
+      topic_name[0] = 0x00;
+      break;
+  }
+
+  /* Let's go! */
+  return topic_name;
+}
+
+/*
+ * This function is used to make a new connection to MQTT broker
+ */
+void mqtt_connect()
+{
+  /* Non-stop retries */
+  while (!mqttClient.connected())
+  {
+    /* Use the board+flash IDs as identifier */
+    snprintf(buf_data, BUF_DATA_MAX,
+             &quot;IoTesla-%08X-%08X\n&quot;,
+             ESP.getChipId(), ESP.getFlashChipId());
+
+    /* Connect to broker */
+    Serial.printf(&quot;Connecting to MQTT broker:\n&quot;
+                  &quot; - username ..: %s\n&quot;
+                  &quot; - client ID .: %s\n&quot;,
+                  mqtt_user, buf_data);
+    if (mqttClient.connect(buf_data, mqtt_user, mqtt_pass))
+    {
+      Serial.printf(&quot;Connected ... announce to broker\n&quot;);
+      mqttClient.publish(get_topic_name(PUBLIC_PUBLISH, &quot;announce&quot;), buf_data);
+    }
+    else
+    {
+      /* Wait 5 seconds before retry */
+      delay(5000);
+    }
+  }
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Are we connected */
+  if (WiFiMulti.run() == WL_CONNECTED)
+  {
+    mqttClient.loop();
+    /* This delay fixes some issues with WiFi stability and data loss */
+    delay(10);
+
+    /* Maintain a connection with the MQTT broker */
+    if (!mqttClient.connected())
+    {
+      mqtt_connect();
+    }
+
+    /* Get the sensor data into our structure */
+    if (get_sensor_data(&amp;sdata))
+    {
+      Serial.printf(&quot;Error while reading sensors data\n&quot;);
+      return;
+    }
+
+    /* If more than 2.5s passed since last message, sent another one */
+    millis_now = millis();
+    if (millis_now - millis_last &gt; 2500)
+    {
+      /* Refresh timer */
+      millis_last = millis_now;
+
+      /* Upload structure data to MQTT broker */
+      if (upload_sensor_data(&amp;sdata))
+      {
+        Serial.printf(&quot;Error while uploading sensors data\n&quot;);
+        return;
+      }
+    }
+  }
+}
+</code></pre>
+
+<h4 id="salida-esperada_6">Salida esperada</h4>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+&gt; Testing: 256dpi's MQTT.h library
+---
+Connecting to MQTT broker:
+ - username ..: tc_d1_0000
+ - client ID .: IoTesla-007FEA27-001640EF
+
+Connected ... announce to broker
+Sensor data published ... OK
+Sensor data published ... OK
+Sensor data published ... OK
 </code></pre></div>
         
         
