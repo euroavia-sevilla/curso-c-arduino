@@ -24,7 +24,7 @@ nav:
   - Otros recursos:
     - otros-recursos/README.md
     - otros-recursos/mqtt-broker.md
-    - otros-recursos/chart-frontend.md
+    - otros-recursos/data-frontend.md
 markdown_extensions:
   - smarty
 plugins:

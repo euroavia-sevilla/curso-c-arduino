@@ -1,4 +1,4 @@
-# Introducción
+# Nodos en tiempo real
 
 <script type="text/javascript" src="jquery-1.8.2.min.js"></script>
 <script src="mqttws31-1.0.1.min.js" type="text/javascript"></script>
