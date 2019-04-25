@@ -234,6 +234,7 @@
                 <li class="third-level"><a href="#wifimulti-conectividad-entre-redes">WiFiMulti: Conectividad entre redes</a></li>
                 <li class="third-level"><a href="#pubsubclient-cliente-mqtt-i">PubSubClient: Cliente MQTT (I)</a></li>
                 <li class="third-level"><a href="#mqtt-cliente-mqtt-ii">MQTT: Cliente MQTT (II)</a></li>
+                <li class="third-level"><a href="#iotesla-client-cliente-de-iotteslastudio">IoTesla-client: Cliente de iot.tesla.studio</a></li>
     </ul>
 </div></div>
         <div class="col-md-9" role="main">
@@ -1122,9 +1123,13 @@ ADC_MODE(ADC_VCC);
 
 /* This block allows to be configured outside this code, but will use
  * the following information as default in case is not */
-#if !defined(STASSID)
-  #define STASSID &quot;IoTesla&quot;
-  #define STAPSK  &quot;euroavia2019&quot;
+#if !defined(STASSID_0)
+  #define STASSID_0 &quot;IoTesla&quot;
+  #define STAPSK_0  &quot;euroavia2019&quot;
+#endif
+#if !defined(STASSID_1)
+  #define STASSID_1 &quot;personal-wifi&quot;
+  #define STAPSK_1  &quot;the_password&quot;
 #endif
 
 /* Define the MQTT host and port to connect to */
@@ -1192,10 +1197,10 @@ void setup()
   WiFi.mode(WIFI_STA);
 
   /* Add your home/personal wifi here */
-  WiFiMulti.addAP(&quot;personal-wifi&quot;, &quot;the_password&quot;);
+  WiFiMulti.addAP(STASSID_1, STAPSK_1);
 
   /* If not found, will try to connect to this one */
-  WiFiMulti.addAP(&quot;IoTesla&quot;,       &quot;euroavia2019&quot;);
+  WiFiMulti.addAP(STASSID_0, STAPSK_0);
 }
 
 /*
@@ -1418,9 +1423,13 @@ ADC_MODE(ADC_VCC);
 
 /* This block allows to be configured outside this code, but will use
  * the following information as default in case is not */
-#if !defined(STASSID)
-  #define STASSID &quot;IoTesla&quot;
-  #define STAPSK  &quot;euroavia2019&quot;
+#if !defined(STASSID_0)
+  #define STASSID_0 &quot;IoTesla&quot;
+  #define STAPSK_0  &quot;euroavia2019&quot;
+#endif
+#if !defined(STASSID_1)
+  #define STASSID_1 &quot;personal-wifi&quot;
+  #define STAPSK_1  &quot;the_password&quot;
 #endif
 
 /* Define the MQTT host and port to connect to */
@@ -1488,10 +1497,10 @@ void setup()
   WiFi.mode(WIFI_STA);
 
   /* Add your home/personal wifi here */
-  WiFiMulti.addAP(&quot;personal-wifi&quot;, &quot;the_password&quot;);
+  WiFiMulti.addAP(STASSID_1, STAPSK_1);
 
   /* If not found, will try to connect to this one */
-  WiFiMulti.addAP(&quot;IoTesla&quot;,       &quot;euroavia2019&quot;);
+  WiFiMulti.addAP(STASSID_0, STAPSK_0);
   mqttClient.begin(mqtt_host, mqtt_port, espClient);
 }
 
@@ -1663,6 +1672,98 @@ Connected ... announce to broker
 Sensor data published ... OK
 Sensor data published ... OK
 Sensor data published ... OK
+</code></pre>
+
+<h3 id="iotesla-client-cliente-de-iotteslastudio">IoTesla-client: Cliente de <code>iot.tesla.studio</code></h3>
+<p>Espacio reservado para la librería del curso, por ahora una clase vacía pero instanciable y funcional.</p>
+<p>Se instala desde el gestor de librerias interno de Arduino.</p>
+<h4 id="resumen_7">Resumen</h4>
+<table>
+<thead>
+<tr>
+<th align="left">Libreria</th>
+<th align="center">Enlaces de interés</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>IoTesla-client</code> de <em>CieNTi</em></td>
+<td align="center"><a href="https://github.com/CieNTi/arduino-IoTesla-client"><i class="fa fa-link" style="color:#FA023C"></i> Repositorio</a></td>
+<td align="center">Documentado en web y ejemplos</td>
+<td align="center"><a href="https://github.com/CieNTi/arduino-IoTesla-client/tree/master/examples"><i class="fa fa-link" style="color:#FA023C"></i> Ejemplos</a></td>
+<td align="center"><a href="https://github.com/CieNTi/arduino-IoTesla-client/tree/master/src"><i class="fa fa-link" style="color:#FA023C"></i> Código fuente</a></td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-funcional_7">Ejemplo funcional</h4>
+<pre><code class="C">/* Include required headers and/or libraries */
+#include &lt;IoTesla-client.h&gt;
+
+/* This block allows to be configured outside this code, but will use
+ * the following information as default in case is not */
+#if !defined(STASSID_0)
+  #define STASSID_0 &quot;IoTesla&quot;
+  #define STAPSK_0  &quot;euroavia2019&quot;
+#endif
+
+/* Instantiate a IoTeslaClient object called IoTesla */
+IoTeslaClient IoTesla;
+
+/*
+ * Single-pass function to configure the app
+ */
+void setup()
+{
+  /* Start serial for output */
+  Serial.begin(115200);
+
+  /* Welcome message! Useful as a control point */
+  Serial.printf(&quot;Ahoy! ESP8266 here!\n&quot;
+                &quot;---\n&quot;
+                );
+
+  /* Check communication before continue */
+  if (IoTesla.begin())
+  {
+    Serial.printf(&quot;IoTesla Client failed to initialize. Stopping here\n&quot;);
+
+    /* Stop here (WDT will reset at some point) */
+    while(1) {};
+  }
+}
+
+/*
+ * Recurrent task, called forever
+ */
+void loop()
+{
+  /* Test IoTesla Client */
+  if (IoTesla.loop())
+  {
+    Serial.printf(&quot;IoTesla Client loop not connected\n&quot;);
+    IoTesla.connect();
+  }
+  else
+  {
+    Serial.printf(&quot;IoTesla Client loop connected\n&quot;);
+    IoTesla.disconnect();
+  }
+
+  /* Ensure not to flood with a huge amount of fast data */
+  delay(500);
+}
+</code></pre>
+
+<h4 id="salida-esperada_7">Salida esperada</h4>
+<pre><code class="text">Ahoy! ESP8266 here!
+---
+IoTesla Client loop not connected
+IoTesla Client loop connected
+IoTesla Client loop not connected
+IoTesla Client loop connected
 </code></pre></div>
         
         
